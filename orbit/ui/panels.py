@@ -31,7 +31,11 @@ def show_plan(plan: Plan) -> None:
 
 def show_step_success(step: PlanStep, result: CommandResult) -> None:
     """Show a successful step result."""
-    console.print(f"  [orbit.success]✓[/] {step.description} [dim]({result.duration_seconds:.1f}s)[/]")
+    console.rule(style="dim")
+    console.print(
+        f"  [orbit.success]✓[/] {step.description}"
+        f"  [dim]exit={result.exit_code}  ({result.duration_seconds:.1f}s)[/]"
+    )
 
 
 def show_replan(reason: str) -> None:
