@@ -10,51 +10,45 @@
   <meta property="og:type" content="website" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --void: #030308;
-      --deep: #07070f;
-      --surface: #0b0b16;
-      --elevated: #10101f;
-      --elevated-hover: #16162a;
-      --border: rgba(255,255,255,0.04);
-      --border-lit: rgba(255,255,255,0.08);
-      --border-bright: rgba(255,255,255,0.12);
-      --text: #e4e4ec;
-      --text-secondary: #8585a0;
-      --text-tertiary: #4e4e6a;
-      --violet: #8b5cf6;
-      --violet-bright: #a78bfa;
-      --violet-glow: rgba(139,92,246,0.15);
-      --violet-glow-strong: rgba(139,92,246,0.3);
-      --cyan: #06b6d4;
-      --cyan-bright: #22d3ee;
-      --cyan-glow: rgba(6,182,212,0.12);
-      --emerald: #10b981;
-      --emerald-bright: #34d399;
-      --emerald-glow: rgba(16,185,129,0.12);
-      --amber: #f59e0b;
-      --amber-bright: #fbbf24;
-      --amber-glow: rgba(245,158,11,0.12);
-      --rose: #f43f5e;
-      --rose-bright: #fb7185;
-      --rose-glow: rgba(244,63,94,0.12);
-      --font-display: 'Outfit', sans-serif;
-      --font-body: 'Instrument Sans', sans-serif;
-      --font-mono: 'Space Mono', monospace;
-      --radius: 16px;
-      --radius-sm: 10px;
-      --radius-xs: 6px;
+      --bg: #0A0906;
+      --bg-warm: #0E0C08;
+      --surface: #13110C;
+      --elevated: #1A1710;
+      --elevated-hover: #211E16;
+      --border: rgba(255,245,230,0.05);
+      --border-lit: rgba(255,245,230,0.08);
+      --border-bright: rgba(255,245,230,0.14);
+      --text: #E8E4DD;
+      --text-secondary: #9C9689;
+      --text-tertiary: #5C584F;
+      --accent: #FF6B35;
+      --accent-muted: rgba(255,107,53,0.12);
+      --accent-glow: rgba(255,107,53,0.25);
+      --safe: #4ADE80;
+      --safe-muted: rgba(74,222,128,0.1);
+      --caution: #FBBF24;
+      --caution-muted: rgba(251,191,36,0.1);
+      --destructive: #FB923C;
+      --destructive-muted: rgba(251,146,60,0.1);
+      --nuclear: #F87171;
+      --nuclear-muted: rgba(248,113,113,0.1);
+      --font-display: 'Bricolage Grotesque', serif;
+      --font-body: 'DM Sans', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --radius: 12px;
+      --radius-sm: 8px;
     }
 
-    html { scroll-behavior: smooth; }
+    html { font-size: 16px; }
 
     body {
       font-family: var(--font-body);
-      background: var(--void);
+      background: var(--bg);
       color: var(--text);
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
@@ -62,100 +56,94 @@
     }
 
     a { color: inherit; text-decoration: none; }
-    ::selection { background: var(--violet-glow-strong); color: #fff; }
+    ::selection { background: var(--accent-glow); color: #fff; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
 
-    .container { max-width: 1180px; margin: 0 auto; padding: 0 28px; }
+    /* ── Grain texture overlay ── */
+    .grain {
+      position: fixed; inset: 0; z-index: 9999;
+      pointer-events: none; opacity: 0.028;
+    }
+    .grain svg { width: 100%; height: 100%; }
 
-    /* ═══════════════════════════════ NAV ═══════════════════════════════ */
+    /* ═══════════════════════ NAV ═══════════════════════ */
     nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-      padding: 0 28px;
-      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      padding: 0 32px;
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     }
     nav.scrolled {
-      background: rgba(3,3,8,0.82);
-      backdrop-filter: blur(20px) saturate(1.4);
-      -webkit-backdrop-filter: blur(20px) saturate(1.4);
+      background: rgba(10,9,6,0.88);
+      backdrop-filter: blur(24px) saturate(1.6);
+      -webkit-backdrop-filter: blur(24px) saturate(1.6);
     }
     .nav-inner {
-      max-width: 1180px; margin: 0 auto;
+      max-width: 1200px; margin: 0 auto;
       display: flex; align-items: center; justify-content: space-between;
-      height: 68px;
+      height: 72px;
       border-bottom: 1px solid var(--border);
-      transition: border-color 0.4s;
     }
     nav.scrolled .nav-inner { border-bottom-color: var(--border-lit); }
 
     .nav-brand {
-      display: flex; align-items: center; gap: 12px;
+      display: flex; align-items: center; gap: 14px;
       font-family: var(--font-display);
-      font-weight: 800; font-size: 1.25rem;
-      letter-spacing: -0.03em;
+      font-weight: 800; font-size: 1.3rem;
+      letter-spacing: -0.04em;
     }
     .nav-orbit-icon {
-      width: 32px; height: 32px;
+      width: 28px; height: 28px;
       position: relative;
       display: flex; align-items: center; justify-content: center;
     }
     .nav-orbit-icon .ring {
       width: 100%; height: 100%;
-      border: 2px solid var(--violet);
+      border: 2px solid var(--accent);
       border-radius: 50%;
       animation: orbitSpin 6s linear infinite;
       position: absolute;
     }
     .nav-orbit-icon .ring::after {
       content: '';
-      width: 7px; height: 7px;
-      background: var(--cyan-bright);
+      width: 6px; height: 6px;
+      background: var(--accent);
       border-radius: 50%;
       position: absolute;
-      top: -3.5px; left: 50%; transform: translateX(-50%);
-      box-shadow: 0 0 10px var(--cyan), 0 0 20px rgba(6,182,212,0.3);
+      top: -3px; left: 50%; transform: translateX(-50%);
+      box-shadow: 0 0 8px var(--accent);
     }
     .nav-orbit-icon .core {
-      width: 8px; height: 8px;
-      background: var(--violet-bright);
+      width: 6px; height: 6px;
+      background: var(--text);
       border-radius: 50%;
-      box-shadow: 0 0 12px var(--violet);
       position: relative; z-index: 1;
     }
     @keyframes orbitSpin { to { transform: rotate(360deg); } }
 
     .nav-links {
-      display: flex; align-items: center; gap: 36px;
+      display: flex; align-items: center; gap: 40px;
     }
     .nav-links a {
-      font-size: 0.85rem; font-weight: 500;
-      color: var(--text-secondary);
-      transition: color 0.25s;
-      position: relative;
+      font-size: 0.82rem; font-weight: 500;
+      color: var(--text-tertiary);
+      transition: color 0.3s;
+      letter-spacing: 0.01em;
     }
     .nav-links a:hover { color: var(--text); }
-    .nav-links a::after {
-      content: '';
-      position: absolute; bottom: -4px; left: 0; right: 0;
-      height: 1px;
-      background: var(--violet);
-      transform: scaleX(0);
-      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .nav-links a:hover::after { transform: scaleX(1); }
 
     .nav-github {
       display: inline-flex; align-items: center; gap: 8px;
-      padding: 8px 16px; border-radius: var(--radius-xs);
+      padding: 7px 16px; border-radius: var(--radius-sm);
       border: 1px solid var(--border-lit);
-      font-size: 0.82rem; font-weight: 600;
+      font-size: 0.8rem; font-weight: 600;
       color: var(--text-secondary);
       transition: all 0.3s;
     }
     .nav-github:hover {
-      border-color: var(--violet);
-      color: var(--violet-bright);
-      background: var(--violet-glow);
+      border-color: var(--accent);
+      color: var(--accent);
     }
-    .nav-github svg { width: 16px; height: 16px; }
+    .nav-github svg { width: 15px; height: 15px; }
 
     .nav-toggle {
       display: none; background: none; border: none;
@@ -166,104 +154,79 @@
       .nav-links { display: none; }
       .nav-links.open {
         display: flex; flex-direction: column;
-        position: absolute; top: 68px; left: 0; right: 0;
-        background: rgba(3,3,8,0.97);
+        position: absolute; top: 72px; left: 0; right: 0;
+        background: rgba(10,9,6,0.97);
         backdrop-filter: blur(24px);
-        padding: 24px 28px; gap: 20px;
+        padding: 28px 32px; gap: 24px;
         border-bottom: 1px solid var(--border-lit);
       }
-      .nav-links a::after { display: none; }
       .nav-toggle { display: block; }
     }
 
-    /* ═══════════════════════════════ HERO ═══════════════════════════════ */
+    /* ═══════════════════════ HERO ═══════════════════════ */
     .hero {
       min-height: 100vh;
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
       text-align: center;
       position: relative;
-      padding: 120px 28px 80px;
+      padding: 140px 32px 100px;
       overflow: hidden;
+    }
+
+    /* Geometric grid background */
+    .hero-grid {
+      position: absolute; inset: 0;
+      pointer-events: none;
+      opacity: 0.04;
+      background-image:
+        linear-gradient(rgba(255,245,230,1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,245,230,1) 1px, transparent 1px);
+      background-size: 64px 64px;
+      mask-image: radial-gradient(ellipse 70% 60% at 50% 45%, black 0%, transparent 70%);
+      -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 45%, black 0%, transparent 70%);
+    }
+
+    /* Horizontal sweep line */
+    .hero-sweep {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent 0%, var(--accent) 50%, transparent 100%);
+      opacity: 0.6;
+      animation: sweepDown 4s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+      box-shadow: 0 0 40px 10px rgba(255,107,53,0.15);
+    }
+    @keyframes sweepDown {
+      0% { top: 0%; opacity: 0; }
+      10% { opacity: 0.6; }
+      90% { opacity: 0.6; }
+      100% { top: 100%; opacity: 0; }
     }
 
     .hero-canvas-wrap {
       position: absolute; inset: 0;
       pointer-events: none;
     }
-    #heroCanvas {
-      width: 100%; height: 100%;
-    }
+    #heroCanvas { width: 100%; height: 100%; }
 
-    /* Gradient orbs */
-    .hero-orb {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(100px);
-      pointer-events: none;
-      opacity: 0.4;
-    }
-    .hero-orb-1 {
-      width: 600px; height: 600px;
-      background: radial-gradient(circle, rgba(139,92,246,0.25) 0%, transparent 70%);
-      top: -200px; left: -100px;
-      animation: orbFloat1 20s ease-in-out infinite;
-    }
-    .hero-orb-2 {
-      width: 500px; height: 500px;
-      background: radial-gradient(circle, rgba(6,182,212,0.2) 0%, transparent 70%);
-      top: 100px; right: -150px;
-      animation: orbFloat2 25s ease-in-out infinite;
-    }
-    .hero-orb-3 {
-      width: 400px; height: 400px;
-      background: radial-gradient(circle, rgba(16,185,129,0.15) 0%, transparent 70%);
-      bottom: -100px; left: 30%;
-      animation: orbFloat3 18s ease-in-out infinite;
-    }
-    @keyframes orbFloat1 {
-      0%, 100% { transform: translate(0, 0) scale(1); }
-      33% { transform: translate(60px, 40px) scale(1.1); }
-      66% { transform: translate(-30px, 80px) scale(0.95); }
-    }
-    @keyframes orbFloat2 {
-      0%, 100% { transform: translate(0, 0) scale(1); }
-      50% { transform: translate(-80px, 60px) scale(1.15); }
-    }
-    @keyframes orbFloat3 {
-      0%, 100% { transform: translate(0, 0) scale(1); }
-      50% { transform: translate(50px, -40px) scale(1.1); }
-    }
-
-    /* Grid lines */
-    .hero::after {
-      content: '';
-      position: absolute; inset: 0;
-      background:
-        linear-gradient(rgba(139,92,246,0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(139,92,246,0.02) 1px, transparent 1px);
-      background-size: 80px 80px;
-      mask-image: radial-gradient(ellipse 60% 50% at 50% 40%, black 10%, transparent 70%);
-      -webkit-mask-image: radial-gradient(ellipse 60% 50% at 50% 40%, black 10%, transparent 70%);
-      pointer-events: none;
-    }
-
-    .hero-content { position: relative; z-index: 2; max-width: 840px; }
+    .hero-content { position: relative; z-index: 2; max-width: 900px; }
 
     .hero-pill {
       display: inline-flex; align-items: center; gap: 10px;
-      padding: 6px 20px 6px 14px;
+      padding: 7px 20px 7px 14px;
       border-radius: 999px;
-      background: rgba(16,185,129,0.06);
-      border: 1px solid rgba(16,185,129,0.15);
-      font-size: 0.78rem; font-weight: 500;
-      color: var(--emerald-bright);
-      margin-bottom: 40px;
-      animation: heroFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+      background: var(--safe-muted);
+      border: 1px solid rgba(74,222,128,0.12);
+      font-size: 0.76rem; font-weight: 500;
+      color: var(--safe);
+      margin-bottom: 48px;
+      letter-spacing: 0.02em;
+      opacity: 0;
     }
     .hero-pill .dot {
       width: 6px; height: 6px;
-      background: var(--emerald);
+      background: var(--safe);
       border-radius: 50%;
       position: relative;
     }
@@ -271,7 +234,7 @@
       content: '';
       position: absolute; inset: -4px;
       border-radius: 50%;
-      background: var(--emerald);
+      background: var(--safe);
       animation: dotPulse 2s ease-in-out infinite;
       opacity: 0;
     }
@@ -282,347 +245,348 @@
 
     .hero h1 {
       font-family: var(--font-display);
-      font-size: clamp(3.2rem, 8vw, 5.5rem);
-      font-weight: 900;
-      letter-spacing: -0.05em;
-      line-height: 1.0;
-      margin-bottom: 28px;
-      animation: heroFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.35s both;
+      font-size: clamp(4rem, 10vw, 7.5rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 0.95;
+      margin-bottom: 36px;
+      opacity: 0;
     }
-    .hero h1 .shimmer {
-      background: linear-gradient(
-        135deg,
-        var(--violet-bright) 0%,
-        var(--cyan-bright) 40%,
-        var(--emerald-bright) 70%,
-        var(--violet-bright) 100%
-      );
-      background-size: 300% auto;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      animation: shimmerSlide 6s ease-in-out infinite;
+    .hero h1 .accent-word {
+      color: var(--accent);
+      display: inline-block;
+      position: relative;
     }
-    @keyframes shimmerSlide {
-      0%, 100% { background-position: 0% center; }
-      50% { background-position: 100% center; }
+    .hero h1 .accent-word::after {
+      content: '';
+      position: absolute;
+      bottom: 0.06em; left: 0; right: 0;
+      height: 3px;
+      background: var(--accent);
+      opacity: 0.4;
+      border-radius: 2px;
     }
 
     .hero-sub {
-      font-size: clamp(1.05rem, 2vw, 1.3rem);
+      font-size: clamp(1rem, 1.8vw, 1.2rem);
       color: var(--text-secondary);
-      max-width: 560px;
-      margin: 0 auto 48px;
-      line-height: 1.7;
-      animation: heroFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both;
-    }
-
-    @keyframes heroFadeUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
+      max-width: 520px;
+      margin: 0 auto 52px;
+      line-height: 1.75;
+      font-weight: 400;
+      opacity: 0;
     }
 
     .hero-actions {
       display: flex; align-items: center; justify-content: center;
       gap: 14px; flex-wrap: wrap;
-      animation: heroFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.65s both;
+      opacity: 0;
     }
 
-    .btn-glow {
+    .btn {
       display: inline-flex; align-items: center; gap: 10px;
-      padding: 14px 32px; border-radius: 12px;
+      padding: 14px 32px; border-radius: var(--radius-sm);
       font-family: var(--font-body);
-      font-size: 0.95rem; font-weight: 600;
+      font-size: 0.9rem; font-weight: 600;
       border: none; cursor: pointer;
-      position: relative; overflow: hidden;
       transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      letter-spacing: 0.01em;
     }
+    .btn svg { width: 16px; height: 16px; flex-shrink: 0; }
     .btn-primary {
-      background: linear-gradient(135deg, var(--violet) 0%, #7c3aed 100%);
+      background: var(--accent);
       color: #fff;
-      box-shadow: 0 0 0 1px rgba(139,92,246,0.3), 0 4px 24px rgba(139,92,246,0.2);
-    }
-    .btn-primary::before {
-      content: '';
-      position: absolute; inset: 0;
-      background: linear-gradient(135deg, transparent 30%, rgba(255,255,255,0.12) 50%, transparent 70%);
-      background-size: 300% 100%;
-      animation: btnSheen 4s ease-in-out infinite;
-    }
-    @keyframes btnSheen {
-      0% { background-position: 200% center; }
-      100% { background-position: -100% center; }
+      box-shadow: 0 1px 2px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.15);
     }
     .btn-primary:hover {
       transform: translateY(-2px);
-      box-shadow: 0 0 0 1px rgba(139,92,246,0.5), 0 8px 40px rgba(139,92,246,0.35);
+      box-shadow: 0 8px 32px rgba(255,107,53,0.3), 0 1px 2px rgba(0,0,0,0.3);
     }
     .btn-outline {
-      background: var(--elevated);
+      background: transparent;
       color: var(--text);
-      border: 1px solid var(--border-lit);
+      border: 1px solid var(--border-bright);
     }
     .btn-outline:hover {
-      border-color: var(--border-bright);
-      background: var(--elevated-hover);
+      border-color: var(--text-secondary);
       transform: translateY(-2px);
     }
-    .btn-glow svg { width: 16px; height: 16px; flex-shrink: 0; }
 
     /* ── Terminal Demo ── */
     .terminal {
-      max-width: 780px; width: 100%; margin: 56px auto 0;
-      border-radius: var(--radius);
+      max-width: 760px; width: 100%; margin: 72px auto 0;
+      border-radius: 14px;
       border: 1px solid var(--border-lit);
-      background: rgba(7,7,15,0.85);
-      backdrop-filter: blur(12px);
+      background: rgba(14,12,8,0.7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       box-shadow:
-        0 0 0 1px rgba(139,92,246,0.04),
-        0 32px 100px rgba(0,0,0,0.6),
-        inset 0 1px 0 rgba(255,255,255,0.03);
+        0 40px 120px rgba(0,0,0,0.5),
+        0 0 0 1px rgba(255,245,230,0.03);
       overflow: hidden;
-      animation: heroFadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.8s both;
+      position: relative;
+      opacity: 0;
     }
+    /* Scan-line overlay */
+    .terminal::after {
+      content: '';
+      position: absolute; inset: 0;
+      pointer-events: none;
+      z-index: 10;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.04) 2px,
+        rgba(0,0,0,0.04) 4px
+      );
+    }
+
     .terminal-chrome {
-      display: flex; align-items: center; gap: 8px;
-      padding: 14px 20px;
-      background: rgba(16,16,31,0.5);
+      display: flex; align-items: center;
+      padding: 16px 20px;
+      background: rgba(20,18,13,0.8);
       border-bottom: 1px solid var(--border);
+      position: relative;
     }
-    .terminal-dot { width: 12px; height: 12px; border-radius: 50%; }
-    .terminal-dot:nth-child(1) { background: #ff5f57; }
-    .terminal-dot:nth-child(2) { background: #febc2e; }
-    .terminal-dot:nth-child(3) { background: #28c840; }
+    .terminal-dots {
+      display: flex; gap: 8px;
+    }
+    .terminal-dot {
+      width: 12px; height: 12px; border-radius: 50%;
+      position: relative;
+    }
+    .terminal-dot::after {
+      content: '';
+      position: absolute; inset: 2px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+      clip-path: inset(50% 0 0 0);
+    }
+    .terminal-dot.red { background: #FF5F57; }
+    .terminal-dot.yellow { background: #FEBC2E; }
+    .terminal-dot.green { background: #28C840; }
     .terminal-title {
-      flex: 1; text-align: center;
-      font-family: var(--font-mono); font-size: 0.7rem;
+      position: absolute; left: 50%; transform: translateX(-50%);
+      font-family: var(--font-mono); font-size: 0.68rem;
       color: var(--text-tertiary);
+      letter-spacing: 0.04em;
     }
 
     .terminal-tabs {
       display: flex; border-bottom: 1px solid var(--border);
-      background: rgba(11,11,22,0.4);
+      background: rgba(14,12,8,0.5);
     }
     .terminal-tab {
-      padding: 10px 22px;
-      font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700;
+      padding: 11px 24px;
+      font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600;
       color: var(--text-tertiary);
       cursor: pointer;
       border: none; background: none;
-      border-bottom: 2px solid transparent;
+      border-bottom: 1.5px solid transparent;
       transition: all 0.25s;
+      letter-spacing: 0.02em;
     }
     .terminal-tab:hover { color: var(--text-secondary); }
     .terminal-tab.active {
-      color: var(--violet-bright);
-      border-bottom-color: var(--violet);
-      background: rgba(139,92,246,0.04);
+      color: var(--accent);
+      border-bottom-color: var(--accent);
     }
 
     .terminal-body {
-      padding: 24px 28px;
+      padding: 28px 28px;
       font-family: var(--font-mono);
-      font-size: 0.8rem;
-      line-height: 1.95;
-      min-height: 300px;
+      font-size: 0.78rem;
+      line-height: 2;
+      min-height: 310px;
       position: relative;
     }
     .t-line { display: block; white-space: pre-wrap; word-break: break-all; }
-    .t-prompt { color: var(--emerald-bright); }
+    .t-prompt { color: var(--safe); }
     .t-cmd { color: var(--text); font-weight: 700; }
-    .t-arg { color: var(--violet-bright); }
+    .t-arg { color: var(--accent); }
     .t-dim { color: var(--text-tertiary); }
     .t-out { color: var(--text-secondary); }
-    .t-label { color: var(--amber-bright); font-weight: 700; }
-    .t-safe { color: var(--emerald-bright); font-weight: 700; }
-    .t-caution { color: var(--amber-bright); font-weight: 700; }
-    .t-destructive { color: var(--rose-bright); font-weight: 700; }
-    .t-step { color: var(--cyan-bright); font-weight: 700; }
+    .t-label { color: var(--caution); font-weight: 700; }
+    .t-safe { color: var(--safe); font-weight: 700; }
+    .t-caution { color: var(--caution); font-weight: 700; }
+    .t-destructive { color: var(--nuclear); font-weight: 700; }
+    .t-step { color: var(--accent); font-weight: 700; }
     .t-cursor {
-      display: inline-block; width: 8px; height: 17px;
-      background: var(--violet-bright);
+      display: inline-block; width: 8px; height: 16px;
+      background: var(--accent);
       animation: cursorBlink 1s step-end infinite;
       vertical-align: text-bottom;
       margin-left: 2px;
     }
     @keyframes cursorBlink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
 
-    /* ═══════════════════════════════ SECTIONS ═══════════════════════════════ */
-    section { padding: 140px 0; position: relative; }
+    /* ═══════════════════════ SECTIONS ═══════════════════════ */
+    section { padding: 160px 0; position: relative; }
 
     .section-tag {
-      display: inline-flex; align-items: center; gap: 10px;
       font-family: var(--font-mono);
-      font-size: 0.68rem; font-weight: 700;
-      letter-spacing: 0.14em; text-transform: uppercase;
-      color: var(--violet-bright);
-      margin-bottom: 20px;
+      font-size: 0.68rem; font-weight: 600;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 24px;
+      display: flex; align-items: center; gap: 12px;
     }
     .section-tag::before {
       content: '';
-      width: 32px; height: 1px;
-      background: linear-gradient(90deg, var(--violet), transparent);
+      width: 24px; height: 1px;
+      background: var(--accent);
     }
 
     section h2 {
       font-family: var(--font-display);
-      font-size: clamp(2.4rem, 5vw, 3.4rem);
+      font-size: clamp(2.6rem, 5.5vw, 4rem);
       font-weight: 800;
       letter-spacing: -0.04em;
-      line-height: 1.08;
-      margin-bottom: 16px;
+      line-height: 1.0;
+      margin-bottom: 20px;
+      clip-path: inset(0 100% 0 0);
     }
     section .lead {
-      font-size: 1.1rem; color: var(--text-secondary);
-      max-width: 540px; line-height: 1.7;
-      margin-bottom: 72px;
+      font-size: 1.05rem; color: var(--text-secondary);
+      max-width: 480px; line-height: 1.75;
+      margin-bottom: 80px;
+      font-weight: 400;
     }
 
-    /* ── Reveal animations ── */
-    .rv {
-      opacity: 0;
-      transform: translateY(32px);
-      transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-                  transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .rv.vis {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* ═══════════════════════════════ WHY ORBIT ═══════════════════════════════ */
+    /* ═══════════════════════ WHY ORBIT — ASYMMETRIC ═══════════════════════ */
     .why-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1px;
-      background: var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 12px;
     }
-    @media (max-width: 900px) { .why-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 600px) { .why-grid { grid-template-columns: 1fr; } }
-
     .why-card {
       background: var(--surface);
-      padding: 36px 28px;
-      transition: background 0.4s;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 40px 32px;
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
       position: relative;
-    }
-    .why-card:hover { background: var(--elevated); }
-    .why-card::before {
-      content: '';
-      position: absolute; top: 0; left: 24px; right: 24px;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--card-color, var(--violet)), transparent);
+      overflow: hidden;
       opacity: 0;
-      transition: opacity 0.4s;
+      transform: translateY(40px);
     }
-    .why-card:hover::before { opacity: 0.5; }
+    .why-card:hover {
+      border-color: var(--border-bright);
+      background: var(--elevated);
+      transform: translateY(-4px) !important;
+    }
+    .why-card::after {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+    .why-card:hover::after { opacity: 0.5; }
+
+    /* Asymmetric sizing */
+    .why-card:nth-child(1) { grid-column: span 8; }
+    .why-card:nth-child(2) { grid-column: span 4; }
+    .why-card:nth-child(3) { grid-column: span 4; }
+    .why-card:nth-child(4) { grid-column: span 4; }
+    .why-card:nth-child(5) { grid-column: span 4; }
+    .why-card:nth-child(6) { grid-column: span 8; }
+
+    @media (max-width: 768px) {
+      .why-card { grid-column: span 12 !important; }
+    }
 
     .why-icon {
-      width: 40px; height: 40px; border-radius: 10px;
+      width: 36px; height: 36px; border-radius: 8px;
       display: flex; align-items: center; justify-content: center;
-      margin-bottom: 20px;
-      font-size: 1.2rem;
+      margin-bottom: 24px;
+      background: var(--accent-muted);
+      border: 1px solid rgba(255,107,53,0.1);
+      color: var(--accent);
     }
     .why-card h3 {
       font-family: var(--font-display);
-      font-size: 1.05rem; font-weight: 700;
-      margin-bottom: 6px; letter-spacing: -0.02em;
+      font-size: 1.15rem; font-weight: 700;
+      margin-bottom: 8px; letter-spacing: -0.02em;
     }
     .why-card .problem {
       font-size: 0.78rem; color: var(--text-tertiary);
-      margin-bottom: 12px; line-height: 1.5;
-      padding-bottom: 12px;
+      margin-bottom: 16px; line-height: 1.55;
+      padding-bottom: 16px;
       border-bottom: 1px solid var(--border);
     }
     .why-card .solution {
-      font-size: 0.84rem; color: var(--text-secondary); line-height: 1.65;
+      font-size: 0.85rem; color: var(--text-secondary); line-height: 1.7;
     }
-    .why-card .solution strong { color: var(--emerald-bright); font-weight: 600; }
+    .why-card .solution strong { color: var(--accent); font-weight: 600; }
 
-    /* ═══════════════════════════════ PIPELINE ═══════════════════════════════ */
+    /* ═══════════════════════ PIPELINE ═══════════════════════ */
     .pipeline-section {
-      background: linear-gradient(180deg, var(--void) 0%, var(--deep) 40%, var(--void) 100%);
-      overflow: hidden;
+      background: var(--bg-warm);
     }
-    .pipeline-section .orb-bg {
-      position: absolute;
-      width: 500px; height: 500px;
-      border-radius: 50%;
-      filter: blur(120px);
-      pointer-events: none;
-      opacity: 0.3;
-    }
-    .pipeline-section .orb-bg-1 {
-      background: radial-gradient(circle, rgba(139,92,246,0.2) 0%, transparent 70%);
-      top: 10%; right: -10%;
-    }
-    .pipeline-section .orb-bg-2 {
-      background: radial-gradient(circle, rgba(6,182,212,0.15) 0%, transparent 70%);
-      bottom: 10%; left: -10%;
-    }
-
     .pipeline-track {
-      max-width: 720px; margin: 0 auto;
+      max-width: 680px; margin: 0 auto;
       position: relative;
     }
     .pipeline-track::before {
       content: '';
       position: absolute;
-      left: 31px; top: 0; bottom: 0;
-      width: 2px;
-      background: linear-gradient(180deg,
-        var(--violet) 0%,
-        var(--cyan) 25%,
-        var(--emerald) 50%,
-        var(--violet) 75%,
-        var(--cyan) 100%);
-      opacity: 0.12;
+      left: 27px; top: 0; bottom: 0;
+      width: 1px;
+      background: linear-gradient(180deg, var(--accent) 0%, var(--border-bright) 100%);
+      opacity: 0.2;
     }
 
     .pipe-step {
-      display: flex; gap: 24px;
-      padding: 28px;
-      margin-bottom: 6px;
-      border-radius: var(--radius);
-      border: 1px solid transparent;
-      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex; gap: 28px;
+      padding: 28px 0;
       position: relative;
-    }
-    .pipe-step:hover {
-      border-color: var(--border-lit);
-      background: rgba(16,16,31,0.4);
-      transform: translateX(6px);
+      opacity: 0;
+      transform: translateY(40px);
     }
 
     .pipe-num {
       flex-shrink: 0;
-      width: 40px; height: 40px;
+      width: 36px; height: 36px;
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
       font-family: var(--font-mono);
-      font-size: 0.82rem; font-weight: 700;
+      font-size: 0.75rem; font-weight: 700;
+      background: var(--surface);
+      border: 1px solid var(--border-lit);
+      color: var(--text-secondary);
       position: relative; z-index: 1;
+      transition: all 0.4s;
     }
     .pipe-step:hover .pipe-num {
-      box-shadow: 0 0 20px currentColor;
+      border-color: var(--accent);
+      color: var(--accent);
+      box-shadow: 0 0 16px var(--accent-muted);
     }
 
     .pipe-body h3 {
       font-family: var(--font-display);
       font-size: 1.05rem; font-weight: 700;
-      margin-bottom: 6px; letter-spacing: -0.01em;
+      margin-bottom: 8px; letter-spacing: -0.02em;
     }
     .pipe-body p {
-      font-size: 0.84rem; color: var(--text-secondary); line-height: 1.65;
+      font-size: 0.84rem; color: var(--text-secondary); line-height: 1.7;
     }
-    .pipe-tags { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
+    .pipe-body code {
+      background: var(--bg);
+      padding: 2px 7px; border-radius: 4px;
+      font-size: 0.74rem; color: var(--accent);
+      font-family: var(--font-mono);
+      border: 1px solid var(--border);
+    }
+    .pipe-tags { display: flex; gap: 6px; margin-top: 14px; flex-wrap: wrap; }
     .pipe-tag {
       display: inline-flex; align-items: center; gap: 5px;
       padding: 3px 10px; border-radius: 999px;
       font-family: var(--font-mono);
-      font-size: 0.62rem; font-weight: 700;
+      font-size: 0.6rem; font-weight: 700;
       letter-spacing: 0.06em; text-transform: uppercase;
     }
     .pipe-tag::before {
@@ -630,36 +594,34 @@
       width: 5px; height: 5px; border-radius: 50%;
     }
     .pipe-tag.det {
-      background: var(--emerald-glow);
-      color: var(--emerald-bright);
-      border: 1px solid rgba(16,185,129,0.15);
+      background: var(--safe-muted);
+      color: var(--safe);
+      border: 1px solid rgba(74,222,128,0.1);
     }
-    .pipe-tag.det::before { background: var(--emerald); }
+    .pipe-tag.det::before { background: var(--safe); }
     .pipe-tag.llm {
-      background: var(--violet-glow);
-      color: var(--violet-bright);
-      border: 1px solid rgba(139,92,246,0.15);
+      background: var(--accent-muted);
+      color: var(--accent);
+      border: 1px solid rgba(255,107,53,0.1);
     }
-    .pipe-tag.llm::before { background: var(--violet); }
+    .pipe-tag.llm::before { background: var(--accent); }
 
     .pipe-legend {
-      display: flex; justify-content: center; gap: 32px;
-      margin-top: 40px;
+      display: flex; justify-content: center; gap: 36px;
+      margin-top: 48px;
       font-size: 0.78rem; color: var(--text-secondary);
     }
     .pipe-legend span { display: inline-flex; align-items: center; gap: 8px; }
-    .pipe-legend .ldot { width: 8px; height: 8px; border-radius: 50%; }
-    .pipe-legend .ldot.det { background: var(--emerald); }
-    .pipe-legend .ldot.llm { background: var(--violet); }
+    .pipe-legend .ldot { width: 7px; height: 7px; border-radius: 50%; }
+    .pipe-legend .ldot.det { background: var(--safe); }
+    .pipe-legend .ldot.llm { background: var(--accent); }
 
-    /* ═══════════════════════════════ SAFETY ═══════════════════════════════ */
-    .safety-section { overflow: hidden; }
-
+    /* ═══════════════════════ SAFETY ═══════════════════════ */
     .tiers-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 12px;
-      margin-bottom: 56px;
+      margin-bottom: 64px;
     }
     @media (max-width: 900px) { .tiers-grid { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 500px) { .tiers-grid { grid-template-columns: 1fr; } }
@@ -670,9 +632,11 @@
       border-radius: var(--radius);
       padding: 32px 20px;
       text-align: center;
-      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
       position: relative;
       overflow: hidden;
+      opacity: 0;
+      transform: translateY(40px);
     }
     .tier-card::after {
       content: '';
@@ -681,72 +645,69 @@
       opacity: 0; transition: opacity 0.4s;
     }
     .tier-card:hover {
-      border-color: var(--border-lit);
-      transform: translateY(-6px);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      border-color: var(--border-bright);
+      transform: translateY(-6px) !important;
     }
     .tier-card:hover::after { opacity: 1; }
 
     .tier-icon {
-      width: 48px; height: 48px; border-radius: 14px;
+      width: 44px; height: 44px; border-radius: 10px;
       margin: 0 auto 16px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 1.4rem;
       transition: transform 0.3s;
     }
-    .tier-card:hover .tier-icon { transform: scale(1.12) rotate(-4deg); }
+    .tier-card:hover .tier-icon { transform: scale(1.1); }
 
     .tier-card h3 {
       font-family: var(--font-display);
-      font-size: 0.85rem; font-weight: 800;
-      text-transform: uppercase; letter-spacing: 0.1em;
+      font-size: 0.8rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 0.12em;
       margin-bottom: 8px;
     }
     .tier-card .tier-action {
-      font-size: 0.78rem; color: var(--text-secondary);
+      font-size: 0.76rem; color: var(--text-secondary);
       margin-bottom: 16px; line-height: 1.5;
     }
     .tier-card .tier-example {
-      font-family: var(--font-mono); font-size: 0.68rem;
-      padding: 6px 12px; border-radius: var(--radius-xs);
-      background: var(--void);
+      font-family: var(--font-mono); font-size: 0.66rem;
+      padding: 5px 12px; border-radius: 4px;
+      background: var(--bg);
       color: var(--text-secondary);
       display: inline-block;
       border: 1px solid var(--border);
     }
 
-    .tier-safe .tier-icon { background: var(--emerald-glow); color: var(--emerald); border: 1px solid rgba(16,185,129,0.15); }
-    .tier-safe h3 { color: var(--emerald-bright); }
-    .tier-safe::after { background: var(--emerald); }
-    .tier-caution .tier-icon { background: var(--amber-glow); color: var(--amber); border: 1px solid rgba(245,158,11,0.15); }
-    .tier-caution h3 { color: var(--amber-bright); }
-    .tier-caution::after { background: var(--amber); }
-    .tier-destructive .tier-icon { background: rgba(251,146,60,0.1); color: #fb923c; border: 1px solid rgba(251,146,60,0.15); }
-    .tier-destructive h3 { color: #fdba74; }
-    .tier-destructive::after { background: #fb923c; }
-    .tier-nuclear .tier-icon { background: var(--rose-glow); color: var(--rose); border: 1px solid rgba(244,63,94,0.15); }
-    .tier-nuclear h3 { color: var(--rose-bright); }
-    .tier-nuclear::after { background: var(--rose); }
+    .tier-safe .tier-icon { background: var(--safe-muted); color: var(--safe); border: 1px solid rgba(74,222,128,0.1); }
+    .tier-safe h3 { color: var(--safe); }
+    .tier-safe::after { background: var(--safe); }
+    .tier-caution .tier-icon { background: var(--caution-muted); color: var(--caution); border: 1px solid rgba(251,191,36,0.1); }
+    .tier-caution h3 { color: var(--caution); }
+    .tier-caution::after { background: var(--caution); }
+    .tier-destructive .tier-icon { background: var(--destructive-muted); color: var(--destructive); border: 1px solid rgba(251,146,60,0.1); }
+    .tier-destructive h3 { color: var(--destructive); }
+    .tier-destructive::after { background: var(--destructive); }
+    .tier-nuclear .tier-icon { background: var(--nuclear-muted); color: var(--nuclear); border: 1px solid rgba(248,113,113,0.1); }
+    .tier-nuclear h3 { color: var(--nuclear); }
+    .tier-nuclear::after { background: var(--nuclear); }
 
     /* Interactive classifier */
     .classifier-demo {
-      max-width: 600px; margin: 0 auto 56px;
+      max-width: 580px; margin: 0 auto 48px;
       border-radius: var(--radius);
       border: 1px solid var(--border-lit);
       background: var(--surface);
       overflow: hidden;
     }
     .classifier-header {
-      padding: 16px 24px;
+      padding: 14px 24px;
       border-bottom: 1px solid var(--border);
       display: flex; align-items: center; gap: 10px;
       font-family: var(--font-mono);
-      font-size: 0.72rem; font-weight: 700;
+      font-size: 0.68rem; font-weight: 700;
       color: var(--text-secondary);
       text-transform: uppercase;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.1em;
     }
-    .classifier-header svg { width: 14px; height: 14px; color: var(--violet-bright); }
     .classifier-input-wrap {
       display: flex; align-items: center;
       padding: 0 24px;
@@ -754,97 +715,92 @@
     }
     .classifier-dollar {
       font-family: var(--font-mono); font-size: 0.85rem;
-      color: var(--emerald-bright); font-weight: 700;
+      color: var(--safe); font-weight: 700;
       margin-right: 12px;
     }
     #classifierInput {
       flex: 1;
       background: none; border: none;
-      font-family: var(--font-mono); font-size: 0.85rem;
+      font-family: var(--font-mono); font-size: 0.82rem;
       color: var(--text); padding: 18px 0;
       outline: none;
     }
     #classifierInput::placeholder { color: var(--text-tertiary); }
     .classifier-result {
-      padding: 18px 24px;
+      padding: 16px 24px;
       display: flex; align-items: center; justify-content: space-between;
-      min-height: 60px;
+      min-height: 56px;
     }
-    .classifier-result .tier-badge {
-      padding: 5px 14px; border-radius: 999px;
+    .tier-badge {
+      padding: 4px 14px; border-radius: 999px;
       font-family: var(--font-mono);
-      font-size: 0.72rem; font-weight: 700;
+      font-size: 0.68rem; font-weight: 700;
       text-transform: uppercase; letter-spacing: 0.06em;
     }
-    .classifier-result .tier-desc {
-      font-size: 0.8rem; color: var(--text-secondary);
-    }
-    .badge-safe { background: var(--emerald-glow); color: var(--emerald-bright); border: 1px solid rgba(16,185,129,0.2); }
-    .badge-caution { background: var(--amber-glow); color: var(--amber-bright); border: 1px solid rgba(245,158,11,0.2); }
-    .badge-destructive { background: rgba(251,146,60,0.1); color: #fdba74; border: 1px solid rgba(251,146,60,0.2); }
-    .badge-nuclear { background: var(--rose-glow); color: var(--rose-bright); border: 1px solid rgba(244,63,94,0.2); }
-    .badge-unknown { background: rgba(78,78,106,0.2); color: var(--text-secondary); border: 1px solid rgba(78,78,106,0.3); }
+    .tier-desc { font-size: 0.78rem; color: var(--text-secondary); }
+    .badge-safe { background: var(--safe-muted); color: var(--safe); border: 1px solid rgba(74,222,128,0.15); }
+    .badge-caution { background: var(--caution-muted); color: var(--caution); border: 1px solid rgba(251,191,36,0.15); }
+    .badge-destructive { background: var(--destructive-muted); color: var(--destructive); border: 1px solid rgba(251,146,60,0.15); }
+    .badge-nuclear { background: var(--nuclear-muted); color: var(--nuclear); border: 1px solid rgba(248,113,113,0.15); }
+    .badge-unknown { background: rgba(92,88,79,0.15); color: var(--text-secondary); border: 1px solid rgba(92,88,79,0.2); }
 
-    /* Production escalation */
+    /* Escalation demo */
     .escalation-demo {
-      max-width: 650px; margin: 0 auto;
+      max-width: 620px; margin: 0 auto;
       border-radius: var(--radius);
       border: 1px solid var(--border);
       background: var(--surface);
       overflow: hidden;
     }
     .escalation-header {
-      padding: 16px 24px;
+      padding: 14px 24px;
       border-bottom: 1px solid var(--border);
       display: flex; align-items: center; gap: 10px;
       font-family: var(--font-mono);
-      font-size: 0.72rem; font-weight: 700;
+      font-size: 0.68rem; font-weight: 700;
       color: var(--text-secondary);
       text-transform: uppercase;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.1em;
     }
     .esc-row {
       display: grid; grid-template-columns: 1fr auto auto;
       align-items: center; gap: 16px;
       padding: 14px 24px;
       border-bottom: 1px solid var(--border);
-      font-family: var(--font-mono); font-size: 0.78rem;
+      font-family: var(--font-mono); font-size: 0.76rem;
       transition: background 0.3s;
     }
     .esc-row:last-child { border-bottom: none; }
-    .esc-row:hover { background: rgba(139,92,246,0.02); }
+    .esc-row:hover { background: rgba(255,107,53,0.02); }
     .esc-cmd { color: var(--text); font-weight: 700; }
-    .esc-ctx { color: var(--text-tertiary); font-size: 0.68rem; margin-top: 3px; font-weight: 400; }
+    .esc-ctx { color: var(--text-tertiary); font-size: 0.65rem; margin-top: 3px; font-weight: 400; }
     .esc-arrow {
       display: flex; align-items: center; gap: 4px;
       font-family: var(--font-body);
-      font-size: 0.65rem; font-weight: 700;
-      color: var(--rose);
+      font-size: 0.62rem; font-weight: 700;
+      color: var(--nuclear);
       text-transform: uppercase;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.1em;
     }
 
-    /* ── Callout ── */
+    /* Callout */
     .callout-box {
-      max-width: 650px; margin: 56px auto 0;
+      max-width: 620px; margin: 56px auto 0;
       padding: 24px 28px;
       border-radius: var(--radius-sm);
       background: var(--elevated);
       border: 1px solid var(--border);
-      border-left: 3px solid var(--violet);
+      border-left: 2px solid var(--accent);
       display: flex; gap: 16px;
     }
     .callout-box .callout-icon { flex-shrink: 0; margin-top: 2px; }
     .callout-box h4 {
       font-family: var(--font-display);
-      font-size: 0.95rem; font-weight: 700; margin-bottom: 6px;
+      font-size: 0.95rem; font-weight: 700; margin-bottom: 8px;
     }
-    .callout-box p { font-size: 0.84rem; color: var(--text-secondary); line-height: 1.65; }
+    .callout-box p { font-size: 0.84rem; color: var(--text-secondary); line-height: 1.7; }
 
-    /* ═══════════════════════════════ FEATURES ═══════════════════════════════ */
-    .features-section {
-      background: linear-gradient(180deg, var(--void) 0%, var(--deep) 50%, var(--void) 100%);
-    }
+    /* ═══════════════════════ FEATURES ═══════════════════════ */
     .feat-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -857,37 +813,40 @@
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 32px 24px;
-      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-      position: relative;
+      padding: 36px 28px;
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      opacity: 0;
+      transform: translateY(40px);
     }
     .feat-card:hover {
-      border-color: var(--border-lit);
-      transform: translateY(-4px);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+      border-color: var(--border-bright);
+      transform: translateY(-4px) !important;
     }
     .feat-icon {
-      width: 42px; height: 42px; border-radius: 11px;
+      width: 38px; height: 38px; border-radius: 8px;
       display: flex; align-items: center; justify-content: center;
-      margin-bottom: 18px;
-      background: var(--violet-glow);
-      border: 1px solid rgba(139,92,246,0.12);
+      margin-bottom: 20px;
+      background: var(--accent-muted);
+      border: 1px solid rgba(255,107,53,0.08);
+      color: var(--accent);
     }
     .feat-card h3 {
       font-family: var(--font-display);
-      font-size: 1rem; font-weight: 700; margin-bottom: 8px;
+      font-size: 1.05rem; font-weight: 700; margin-bottom: 10px;
+      letter-spacing: -0.02em;
     }
     .feat-card p {
-      font-size: 0.84rem; color: var(--text-secondary); line-height: 1.65;
+      font-size: 0.84rem; color: var(--text-secondary); line-height: 1.7;
     }
     .feat-card code {
-      background: var(--void); padding: 2px 7px;
-      border-radius: 4px; font-size: 0.74rem;
-      color: var(--cyan-bright); font-family: var(--font-mono);
+      background: var(--bg); padding: 2px 7px;
+      border-radius: 4px; font-size: 0.72rem;
+      color: var(--accent); font-family: var(--font-mono);
       border: 1px solid var(--border);
     }
 
-    /* ═══════════════════════════════ ROUTING ═══════════════════════════════ */
+    /* ═══════════════════════ ROUTING ═══════════════════════ */
+    .routing-section { background: var(--bg-warm); }
     .routing-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -902,16 +861,18 @@
       border-radius: var(--radius);
       padding: 28px 20px;
       text-align: center;
-      transition: all 0.35s;
+      transition: all 0.4s;
+      opacity: 0;
+      transform: translateY(40px);
     }
     .route-card:hover {
-      border-color: var(--border-lit);
-      transform: translateY(-4px);
+      border-color: var(--border-bright);
+      transform: translateY(-4px) !important;
     }
     .route-card .cap {
       font-family: var(--font-mono);
-      font-size: 0.82rem; font-weight: 700;
-      color: var(--cyan-bright);
+      font-size: 0.8rem; font-weight: 700;
+      color: var(--accent);
       margin-bottom: 8px;
     }
     .route-card .desc {
@@ -920,23 +881,22 @@
     }
     .route-card .models {
       font-family: var(--font-mono);
-      font-size: 0.68rem; color: var(--text-tertiary);
+      font-size: 0.66rem; color: var(--text-tertiary);
       margin-bottom: 10px;
     }
-    .route-card .size-badge {
+    .size-badge {
       display: inline-block;
       padding: 3px 10px; border-radius: 999px;
       font-family: var(--font-mono);
-      font-size: 0.65rem; font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
+      font-size: 0.62rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.06em;
     }
-    .sz-sm { background: var(--emerald-glow); color: var(--emerald-bright); border: 1px solid rgba(16,185,129,0.15); }
-    .sz-md { background: var(--amber-glow); color: var(--amber-bright); border: 1px solid rgba(245,158,11,0.15); }
-    .sz-lg { background: rgba(251,146,60,0.1); color: #fdba74; border: 1px solid rgba(251,146,60,0.15); }
-    .sz-any { background: var(--violet-glow); color: var(--violet-bright); border: 1px solid rgba(139,92,246,0.15); }
+    .sz-sm { background: var(--safe-muted); color: var(--safe); border: 1px solid rgba(74,222,128,0.1); }
+    .sz-md { background: var(--caution-muted); color: var(--caution); border: 1px solid rgba(251,191,36,0.1); }
+    .sz-lg { background: var(--destructive-muted); color: var(--destructive); border: 1px solid rgba(251,146,60,0.1); }
+    .sz-any { background: var(--accent-muted); color: var(--accent); border: 1px solid rgba(255,107,53,0.1); }
 
-    /* ═══════════════════════════════ COMMANDS ═══════════════════════════════ */
+    /* ═══════════════════════ COMMANDS ═══════════════════════ */
     .cmds-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -945,58 +905,58 @@
     @media (max-width: 700px) { .cmds-grid { grid-template-columns: 1fr; } }
 
     .cmd-row {
-      display: flex; align-items: center; gap: 16px;
+      display: flex; align-items: center; gap: 20px;
       padding: 16px 22px;
       border-radius: var(--radius-sm);
       border: 1px solid var(--border);
       background: var(--surface);
-      transition: all 0.3s;
+      transition: all 0.35s;
+      opacity: 0;
+      transform: translateY(40px);
     }
     .cmd-row:hover {
-      border-color: var(--border-lit);
-      transform: translateX(4px);
+      border-color: var(--border-bright);
+      transform: translateX(6px) !important;
       background: var(--elevated);
     }
     .cmd-row code {
       font-family: var(--font-mono);
-      font-size: 0.82rem; font-weight: 700;
-      color: var(--cyan-bright);
-      white-space: nowrap; min-width: 190px;
+      font-size: 0.8rem; font-weight: 700;
+      color: var(--accent);
+      white-space: nowrap; min-width: 200px;
     }
     .cmd-row span { font-size: 0.82rem; color: var(--text-secondary); }
 
-    /* ═══════════════════════════════ STATS ═══════════════════════════════ */
+    /* ═══════════════════════ STATS ═══════════════════════ */
     .stats-bar {
       border-top: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
-      background: var(--deep);
+      background: var(--bg-warm);
     }
     .stats-inner {
       display: flex; justify-content: center;
-      gap: 72px; padding: 60px 28px;
+      gap: 80px; padding: 72px 32px;
       flex-wrap: wrap;
-      max-width: 1180px; margin: 0 auto;
+      max-width: 1200px; margin: 0 auto;
     }
     .stat-item { text-align: center; }
     .stat-num {
       font-family: var(--font-display);
-      font-size: clamp(2.4rem, 4vw, 3rem);
-      font-weight: 900;
+      font-size: clamp(2.6rem, 4.5vw, 3.4rem);
+      font-weight: 800;
       letter-spacing: -0.04em;
       line-height: 1;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
+      color: var(--text);
     }
-    .stat-item:nth-child(1) .stat-num { color: var(--violet-bright); }
-    .stat-item:nth-child(2) .stat-num { color: var(--emerald-bright); }
-    .stat-item:nth-child(3) .stat-num { color: var(--cyan-bright); }
-    .stat-item:nth-child(4) .stat-num { color: var(--amber-bright); }
-    .stat-item:nth-child(5) .stat-num { color: var(--rose-bright); }
+    .stat-item:nth-child(1) .stat-num { color: var(--accent); }
+    .stat-item:nth-child(2) .stat-num { color: var(--safe); }
     .stat-label {
-      font-size: 0.8rem; color: var(--text-tertiary);
-      font-weight: 500;
+      font-size: 0.78rem; color: var(--text-tertiary);
+      font-weight: 500; letter-spacing: 0.02em;
     }
 
-    /* ═══════════════════════════════ CTA ═══════════════════════════════ */
+    /* ═══════════════════════ CTA ═══════════════════════ */
     .cta-section {
       text-align: center;
       position: relative; overflow: hidden;
@@ -1004,16 +964,16 @@
     .cta-section::before {
       content: '';
       position: absolute;
-      bottom: 0; left: 50%; transform: translateX(-50%);
+      bottom: -200px; left: 50%; transform: translateX(-50%);
       width: 800px; height: 400px;
-      background: radial-gradient(ellipse, rgba(139,92,246,0.06) 0%, transparent 70%);
+      background: radial-gradient(ellipse, rgba(255,107,53,0.04) 0%, transparent 70%);
       pointer-events: none;
     }
-    .cta-section .lead { margin: 16px auto 56px; }
+    .cta-section .lead { margin: 20px auto 60px; }
 
     .install-steps {
       display: flex; flex-direction: column;
-      gap: 8px; max-width: 520px; margin: 0 auto 40px;
+      gap: 8px; max-width: 500px; margin: 0 auto 44px;
     }
     .install-row {
       display: flex; align-items: center;
@@ -1021,17 +981,17 @@
       border-radius: var(--radius-sm);
       background: var(--surface);
       border: 1px solid var(--border);
-      font-family: var(--font-mono); font-size: 0.85rem;
+      font-family: var(--font-mono); font-size: 0.82rem;
       cursor: pointer;
       transition: all 0.25s;
       position: relative;
     }
-    .install-row:hover { border-color: var(--border-lit); background: var(--elevated); }
+    .install-row:hover { border-color: var(--border-bright); background: var(--elevated); }
     .install-row .step-n {
-      color: var(--text-tertiary); font-size: 0.68rem; font-weight: 700;
+      color: var(--text-tertiary); font-size: 0.65rem; font-weight: 700;
       margin-right: 16px; min-width: 14px;
     }
-    .install-row .dollar { color: var(--emerald-bright); margin-right: 10px; }
+    .install-row .dollar { color: var(--safe); margin-right: 10px; }
     .install-row .cmd-text { color: var(--text); flex: 1; }
     .install-row .copy-icon {
       background: none; border: none; cursor: pointer;
@@ -1041,7 +1001,7 @@
     .install-row .copy-icon:hover { color: var(--text); }
     .install-row .copied-msg {
       position: absolute; right: 22px;
-      font-size: 0.7rem; color: var(--emerald-bright);
+      font-size: 0.68rem; color: var(--safe);
       font-weight: 600; font-family: var(--font-body);
       opacity: 0; transition: opacity 0.2s;
     }
@@ -1049,71 +1009,67 @@
     .install-row.copied .copy-icon { opacity: 0; }
 
     .extras-line {
-      color: var(--text-tertiary); font-size: 0.82rem; line-height: 2;
+      color: var(--text-tertiary); font-size: 0.82rem; line-height: 2.2;
     }
     .extras-line code {
       background: var(--elevated); border: 1px solid var(--border);
       padding: 2px 8px; border-radius: 4px;
-      font-family: var(--font-mono); font-size: 0.72rem;
+      font-family: var(--font-mono); font-size: 0.7rem;
     }
 
-    /* ═══════════════════════════════ FOOTER ═══════════════════════════════ */
+    /* ═══════════════════════ FOOTER ═══════════════════════ */
     footer {
       border-top: 1px solid var(--border);
-      padding: 48px 0;
+      padding: 52px 0;
     }
     .footer-inner {
-      max-width: 1180px; margin: 0 auto; padding: 0 28px;
+      max-width: 1200px; margin: 0 auto; padding: 0 32px;
     }
     .footer-top {
       display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 28px;
+      margin-bottom: 32px;
     }
     .footer-brand {
       display: flex; align-items: center; gap: 10px;
       font-family: var(--font-display);
       font-size: 1.05rem; font-weight: 800;
+      letter-spacing: -0.03em;
     }
-    .footer-links { display: flex; gap: 28px; }
+    .footer-links { display: flex; gap: 32px; }
     .footer-links a {
-      font-size: 0.82rem; color: var(--text-secondary); font-weight: 500;
-      transition: color 0.25s;
+      font-size: 0.8rem; color: var(--text-secondary); font-weight: 500;
+      transition: color 0.3s;
     }
-    .footer-links a:hover { color: var(--text); }
+    .footer-links a:hover { color: var(--accent); }
     .footer-bottom {
       padding-top: 24px;
       border-top: 1px solid var(--border);
-      font-size: 0.78rem; color: var(--text-tertiary);
+      font-size: 0.76rem; color: var(--text-tertiary);
     }
-    .footer-bottom a { color: var(--text-secondary); transition: color 0.25s; }
-    .footer-bottom a:hover { color: var(--violet-bright); }
+    .footer-bottom a { color: var(--text-secondary); transition: color 0.3s; }
+    .footer-bottom a:hover { color: var(--accent); }
 
     @media (max-width: 600px) {
       .footer-top { flex-direction: column; gap: 20px; }
-      .stats-inner { gap: 36px; }
+      .stats-inner { gap: 40px; }
       section { padding: 100px 0; }
-      .hero { padding: 130px 20px 60px; }
+      .hero { padding: 130px 24px 80px; }
       .hero-actions { flex-direction: column; }
     }
 
     /* Scrollbar */
-    ::-webkit-scrollbar { width: 5px; }
-    ::-webkit-scrollbar-track { background: var(--void); }
-    ::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 3px; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 2px; }
     ::-webkit-scrollbar-thumb:hover { background: var(--text-tertiary); }
-
-    /* Noise texture overlay */
-    body::before {
-      content: '';
-      position: fixed; inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-      opacity: 0.015;
-      pointer-events: none;
-      z-index: 9999;
-    }
   </style>
 </head>
 <body>
+
+<!-- Grain texture -->
+<div class="grain">
+  <svg><filter id="grain"><feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#grain)"/></svg>
+</div>
 
 <!-- ═══════════════ NAV ═══════════════ -->
 <nav id="nav">
@@ -1130,7 +1086,7 @@
     </button>
     <div class="nav-links">
       <a href="#why">Why Orbit</a>
-      <a href="#pipeline">How It Works</a>
+      <a href="#pipeline">Architecture</a>
       <a href="#safety">Safety</a>
       <a href="#features">Features</a>
       <a href="#commands">Commands</a>
@@ -1144,27 +1100,26 @@
 
 <!-- ═══════════════ HERO ═══════════════ -->
 <section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-sweep"></div>
   <div class="hero-canvas-wrap">
     <canvas id="heroCanvas"></canvas>
   </div>
-  <div class="hero-orb hero-orb-1"></div>
-  <div class="hero-orb hero-orb-2"></div>
-  <div class="hero-orb hero-orb-3"></div>
 
   <div class="hero-content">
     <div class="hero-pill">
       <span class="dot"></span>
       100% local &mdash; nothing leaves your machine
     </div>
-    <h1>DevOps in<br><span class="shimmer">natural language.</span></h1>
+    <h1>DevOps in<br><span class="accent-word">natural language.</span></h1>
     <p class="hero-sub">Turn plain English into safe, observable infrastructure actions. Multi-model routing, regex-only safety, auto-replanning &mdash; powered by Ollama on your machine.</p>
     <div class="hero-actions">
-      <a href="#install" class="btn-glow btn-primary">
+      <a href="#install" class="btn btn-primary">
         Get Started
         <svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M8 3v10m-4-4l4 4 4-4"/></svg>
       </a>
-      <a href="https://github.com/abhimanyubhagwati/orbit-cli" class="btn-glow btn-outline" target="_blank" rel="noopener">
-        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+      <a href="https://github.com/abhimanyubhagwati/orbit-cli" class="btn btn-outline" target="_blank" rel="noopener">
+        <svg viewBox="0 0 16 16" fill="currentColor" style="width:16px;height:16px"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
         View Source
       </a>
     </div>
@@ -1172,9 +1127,11 @@
     <!-- Terminal Demo -->
     <div class="terminal">
       <div class="terminal-chrome">
-        <div class="terminal-dot"></div>
-        <div class="terminal-dot"></div>
-        <div class="terminal-dot"></div>
+        <div class="terminal-dots">
+          <div class="terminal-dot red"></div>
+          <div class="terminal-dot yellow"></div>
+          <div class="terminal-dot green"></div>
+        </div>
         <div class="terminal-title">orbit &mdash; zsh</div>
       </div>
       <div class="terminal-tabs">
@@ -1191,54 +1148,42 @@
 <section id="why">
   <div class="container">
     <div class="section-tag rv">Why Orbit</div>
-    <h2 class="rv">Built different.</h2>
+    <h2 class="rv-clip">Built different.</h2>
     <p class="lead rv">Most AI CLI tools get the fundamentals wrong. Orbit rethinks every layer.</p>
-    <div class="why-grid rv">
-      <div class="why-card" style="--card-color: var(--emerald);">
-        <div class="why-icon" style="background:var(--emerald-glow);color:var(--emerald);border:1px solid rgba(16,185,129,0.15);">
-          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-        </div>
+    <div class="why-grid">
+      <div class="why-card">
+        <div class="why-icon"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
         <h3>100% Local</h3>
         <p class="problem">Your kubectl configs, env vars, and error logs flow through third-party APIs</p>
         <p class="solution"><strong>Runs entirely on Ollama.</strong> Your infrastructure data never leaves your machine. Zero cloud dependencies.</p>
       </div>
-      <div class="why-card" style="--card-color: var(--violet);">
-        <div class="why-icon" style="background:var(--violet-glow);color:var(--violet-bright);border:1px solid rgba(139,92,246,0.15);">
-          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        </div>
+      <div class="why-card">
+        <div class="why-icon"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
         <h3>Deterministic Safety</h3>
-        <p class="problem">The LLM that generates commands also judges safety &mdash; a circular dependency</p>
-        <p class="solution"><strong>173 regex patterns</strong> classify every command. Deterministic, immune to prompt injection, microsecond latency.</p>
+        <p class="problem">The LLM that generates commands also judges safety</p>
+        <p class="solution"><strong>173 regex patterns</strong> classify every command. Deterministic, injection-immune, microsecond latency.</p>
       </div>
-      <div class="why-card" style="--card-color: var(--cyan);">
-        <div class="why-icon" style="background:var(--cyan-glow);color:var(--cyan-bright);border:1px solid rgba(6,182,212,0.15);">
-          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
-        </div>
+      <div class="why-card">
+        <div class="why-icon"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg></div>
         <h3>Multi-Model Routing</h3>
         <p class="problem">One model handles everything from ls to debugging cascade failures</p>
         <p class="solution"><strong>Routes subtasks to the best local model</strong> per capability. Deterministic selection, no LLM overhead.</p>
       </div>
-      <div class="why-card" style="--card-color: var(--amber);">
-        <div class="why-icon" style="background:var(--amber-glow);color:var(--amber-bright);border:1px solid rgba(245,158,11,0.15);">
-          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
-        </div>
+      <div class="why-card">
+        <div class="why-icon"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg></div>
         <h3>Auto-Replan</h3>
         <p class="problem">When a command fails, you're on your own</p>
         <p class="solution"><strong>Observes failures and generates corrective steps</strong> automatically. Hard budget limits prevent runaway execution.</p>
       </div>
-      <div class="why-card" style="--card-color: var(--cyan);">
-        <div class="why-icon" style="background:var(--cyan-glow);color:var(--cyan-bright);border:1px solid rgba(6,182,212,0.15);">
-          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-        </div>
+      <div class="why-card">
+        <div class="why-icon"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
         <h3>Context-Aware</h3>
         <p class="problem">No awareness of what branch, namespace, or cluster you're in</p>
         <p class="solution"><strong>Auto-scans git, Docker, K8s, system, and filesystem</strong> in parallel. Token-aware budget fits the model window.</p>
       </div>
-      <div class="why-card" style="--card-color: var(--rose);">
-        <div class="why-icon" style="background:var(--rose-glow);color:var(--rose-bright);border:1px solid rgba(244,63,94,0.15);">
-          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
-        </div>
-        <h3>Prod Detection</h3>
+      <div class="why-card">
+        <div class="why-icon"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg></div>
+        <h3>Production Detection</h3>
         <p class="problem">Same confirmations whether you're on dev or main</p>
         <p class="solution"><strong>Detects production environments</strong> and auto-escalates 28 risky patterns to higher confirmation tiers.</p>
       </div>
@@ -1248,48 +1193,46 @@
 
 <!-- ═══════════════ PIPELINE ═══════════════ -->
 <section id="pipeline" class="pipeline-section">
-  <div class="orb-bg orb-bg-1"></div>
-  <div class="orb-bg orb-bg-2"></div>
   <div class="container">
-    <div class="section-tag rv">How It Works</div>
-    <h2 class="rv">Five-stage pipeline.</h2>
+    <div class="section-tag rv">Architecture</div>
+    <h2 class="rv-clip">Five-stage pipeline.</h2>
     <p class="lead rv">The LLM handles exactly 2 things: decomposing goals and generating plans. Everything else is deterministic code.</p>
 
     <div class="pipeline-track">
-      <div class="pipe-step rv">
-        <div class="pipe-num" style="background:var(--cyan-glow);color:var(--cyan-bright);border:2px solid rgba(6,182,212,0.2);">1</div>
+      <div class="pipe-step">
+        <div class="pipe-num">1</div>
         <div class="pipe-body">
           <h3>Environment Scan</h3>
-          <p>Five async collectors run in parallel &mdash; git, Docker, Kubernetes, system, and filesystem. Fault-tolerant with 5s timeouts, cached with 5s TTL. Token-aware budget allocates context by relevance.</p>
+          <p>Five async collectors run in parallel &mdash; git, Docker, Kubernetes, system, and filesystem. Fault-tolerant with 5s timeouts, cached with 5s TTL.</p>
           <div class="pipe-tags"><span class="pipe-tag det">Deterministic</span></div>
         </div>
       </div>
-      <div class="pipe-step rv">
-        <div class="pipe-num" style="background:var(--violet-glow);color:var(--violet-bright);border:2px solid rgba(139,92,246,0.2);">2</div>
+      <div class="pipe-step">
+        <div class="pipe-num">2</div>
         <div class="pipe-body">
           <h3>Task Decomposition</h3>
-          <p>Goal broken into subtasks, each tagged with a capability: <code style="background:var(--void);padding:2px 7px;border-radius:4px;font-size:0.74rem;color:var(--cyan-bright);border:1px solid var(--border);">fast_shell</code> <code style="background:var(--void);padding:2px 7px;border-radius:4px;font-size:0.74rem;color:var(--cyan-bright);border:1px solid var(--border);">code_gen</code> <code style="background:var(--void);padding:2px 7px;border-radius:4px;font-size:0.74rem;color:var(--cyan-bright);border:1px solid var(--border);">reasoning</code></p>
+          <p>Goal broken into subtasks, each tagged with a capability: <code>fast_shell</code> <code>code_gen</code> <code>reasoning</code></p>
           <div class="pipe-tags"><span class="pipe-tag llm">LLM Call</span></div>
         </div>
       </div>
-      <div class="pipe-step rv">
-        <div class="pipe-num" style="background:var(--emerald-glow);color:var(--emerald-bright);border:2px solid rgba(16,185,129,0.2);">3</div>
+      <div class="pipe-step">
+        <div class="pipe-num">3</div>
         <div class="pipe-body">
           <h3>Model Selection</h3>
-          <p>Each subtask routed to the best locally-available model. Walks a priority list of known-good models, checks what's installed via Ollama, returns the first match.</p>
+          <p>Each subtask routed to the best locally-available model. Walks a priority list, checks what's installed via Ollama, returns the first match.</p>
           <div class="pipe-tags"><span class="pipe-tag det">Deterministic</span></div>
         </div>
       </div>
-      <div class="pipe-step rv">
-        <div class="pipe-num" style="background:var(--violet-glow);color:var(--violet-bright);border:2px solid rgba(139,92,246,0.2);">4</div>
+      <div class="pipe-step">
+        <div class="pipe-num">4</div>
         <div class="pipe-body">
           <h3>Plan Generation</h3>
-          <p>Structured output via Pydantic JSON schema. Every plan step has a command, expected outcome, and risk classification. Validated before execution.</p>
+          <p>Structured output via Pydantic JSON schema. Every plan step has a command, expected outcome, and risk classification.</p>
           <div class="pipe-tags"><span class="pipe-tag llm">LLM Call</span></div>
         </div>
       </div>
-      <div class="pipe-step rv">
-        <div class="pipe-num" style="background:rgba(251,146,60,0.1);color:#fb923c;border:2px solid rgba(251,146,60,0.2);">5</div>
+      <div class="pipe-step">
+        <div class="pipe-num">5</div>
         <div class="pipe-body">
           <h3>Execution Loop</h3>
           <p>For each step: classify risk (regex), confirm based on tier, execute via async subprocess, observe result. On failure: auto-replan &mdash; 15 steps max, 3 replans per step, 25 total LLM calls.</p>
@@ -1309,51 +1252,42 @@
 </section>
 
 <!-- ═══════════════ SAFETY ═══════════════ -->
-<section id="safety" class="safety-section">
+<section id="safety">
   <div class="container">
     <div class="section-tag rv">Safety System</div>
-    <h2 class="rv">The LLM never<br>decides what's safe.</h2>
-    <p class="lead rv">173 hand-crafted regex patterns classify every command into four tiers. First match wins. Unknown defaults to caution &mdash; never safe.</p>
+    <h2 class="rv-clip">The LLM never<br>decides what's safe.</h2>
+    <p class="lead rv">173 hand-crafted regex patterns classify every command into four tiers. First match wins. Unknown defaults to caution.</p>
 
     <div class="tiers-grid">
-      <div class="tier-card tier-safe rv">
-        <div class="tier-icon">
-          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-        </div>
+      <div class="tier-card tier-safe">
+        <div class="tier-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>
         <h3>Safe</h3>
         <p class="tier-action">Runs silently, no prompt</p>
         <span class="tier-example">ls &middot; cat &middot; git log</span>
       </div>
-      <div class="tier-card tier-caution rv">
-        <div class="tier-icon">
-          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
-        </div>
+      <div class="tier-card tier-caution">
+        <div class="tier-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg></div>
         <h3>Caution</h3>
         <p class="tier-action">Single confirm [y/N]</p>
         <span class="tier-example">git push &middot; pip install</span>
       </div>
-      <div class="tier-card tier-destructive rv">
-        <div class="tier-icon">
-          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 9v4m0 4h.01"/><circle cx="12" cy="12" r="10"/></svg>
-        </div>
+      <div class="tier-card tier-destructive">
+        <div class="tier-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 9v4m0 4h.01"/><circle cx="12" cy="12" r="10"/></svg></div>
         <h3>Destructive</h3>
         <p class="tier-action">Impact analysis + double confirm</p>
         <span class="tier-example">rm &middot; git reset --hard</span>
       </div>
-      <div class="tier-card tier-nuclear rv">
-        <div class="tier-icon">
-          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
-        </div>
+      <div class="tier-card tier-nuclear">
+        <div class="tier-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div>
         <h3>Nuclear</h3>
         <p class="tier-action">Type "i am sure" + 3s cooldown</p>
         <span class="tier-example">rm -rf / &middot; DROP TABLE</span>
       </div>
     </div>
 
-    <!-- Interactive Classifier -->
     <div class="classifier-demo rv">
       <div class="classifier-header">
-        <svg fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         Try it &mdash; classify any command
       </div>
       <div class="classifier-input-wrap">
@@ -1365,10 +1299,9 @@
       </div>
     </div>
 
-    <!-- Escalation Demo -->
-    <div class="escalation-demo rv" style="margin-top: 32px;">
+    <div class="escalation-demo rv">
       <div class="escalation-header">
-        <svg width="14" height="14" fill="none" stroke="var(--rose)" stroke-width="2"><path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+        <svg width="13" height="13" fill="none" stroke="var(--nuclear)" stroke-width="2"><path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
         Production Auto-Escalation
       </div>
       <div class="esc-row">
@@ -1376,10 +1309,10 @@
         <div></div>
         <span class="tier-badge badge-caution">caution</span>
       </div>
-      <div class="esc-row" style="background:rgba(244,63,94,0.02);">
-        <div><div class="esc-cmd">git push origin main</div><div class="esc-ctx" style="color:var(--rose);">ON main branch (production detected)</div></div>
+      <div class="esc-row" style="background:rgba(248,113,113,0.02);">
+        <div><div class="esc-cmd">git push origin main</div><div class="esc-ctx" style="color:var(--nuclear);">ON main branch (production detected)</div></div>
         <div class="esc-arrow">
-          <svg width="12" height="12" fill="none" stroke="var(--rose)" stroke-width="2.5" stroke-linecap="round"><path d="M6 2v8m-3-3l3 3 3-3"/></svg>
+          <svg width="11" height="11" fill="none" stroke="var(--nuclear)" stroke-width="2.5" stroke-linecap="round"><path d="M6 2v7m-3-3l3 3 3-3"/></svg>
           Escalated
         </div>
         <span class="tier-badge badge-nuclear">nuclear</span>
@@ -1392,9 +1325,7 @@
     </div>
 
     <div class="callout-box rv">
-      <div class="callout-icon">
-        <svg width="20" height="20" fill="none" stroke="var(--violet-bright)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      </div>
+      <div class="callout-icon"><svg width="18" height="18" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
       <div>
         <h4>Why not use the LLM for safety?</h4>
         <p>Using the same system that generates commands to judge their safety is a circular dependency. It's vulnerable to prompt injection, can hallucinate, and takes seconds instead of microseconds. Regex patterns are deterministic, injection-immune, and instant.</p>
@@ -1403,32 +1334,32 @@
   </div>
 </section>
 
-<!-- ═══════════════ MULTI-MODEL ROUTING ═══════════════ -->
-<section>
+<!-- ═══════════════ ROUTING ═══════════════ -->
+<section class="routing-section">
   <div class="container">
     <div class="section-tag rv">Multi-Model Routing</div>
-    <h2 class="rv">Right model,<br>right task.</h2>
+    <h2 class="rv-clip">Right model,<br>right task.</h2>
     <p class="lead rv">Not every task needs a 32B model. Orbit routes each subtask to the best locally-available model.</p>
     <div class="routing-grid">
-      <div class="route-card rv">
+      <div class="route-card">
         <div class="cap">fast_shell</div>
         <p class="desc">Status checks, listing, simple queries</p>
         <div class="models">qwen2.5:7b, phi3</div>
         <span class="size-badge sz-sm">Small</span>
       </div>
-      <div class="route-card rv">
+      <div class="route-card">
         <div class="cap">code_gen</div>
         <p class="desc">Scripts, configs, Dockerfiles, manifests</p>
         <div class="models">codellama, qwen2.5</div>
         <span class="size-badge sz-md">Medium</span>
       </div>
-      <div class="route-card rv">
+      <div class="route-card">
         <div class="cap">reasoning</div>
         <p class="desc">Complex debugging, root cause analysis</p>
         <div class="models">deepseek-r1:32b</div>
         <span class="size-badge sz-lg">Large</span>
       </div>
-      <div class="route-card rv">
+      <div class="route-card">
         <div class="cap">general</div>
         <p class="desc">Fallback for uncategorized tasks</p>
         <div class="models">default model</div>
@@ -1439,42 +1370,18 @@
 </section>
 
 <!-- ═══════════════ FEATURES ═══════════════ -->
-<section id="features" class="features-section">
+<section id="features">
   <div class="container">
     <div class="section-tag rv">Features</div>
-    <h2 class="rv">Everything you need.</h2>
+    <h2 class="rv-clip">Everything you need.</h2>
     <p class="lead rv">Built for real DevOps workflows, not demos.</p>
     <div class="feat-grid">
-      <div class="feat-card rv">
-        <div class="feat-icon"><svg width="18" height="18" fill="none" stroke="var(--violet-bright)" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg></div>
-        <h3>Runbooks</h3>
-        <p>Save successful workflows as YAML runbooks. Replay with <code>orbit runbook run</code>. Shareable, version-controllable DevOps recipes.</p>
-      </div>
-      <div class="feat-card rv">
-        <div class="feat-icon"><svg width="18" height="18" fill="none" stroke="var(--violet-bright)" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
-        <h3>Diagnostics</h3>
-        <p>Run <code>orbit wtf</code> after a failure. Full context analysis with error classification and suggested fixes.</p>
-      </div>
-      <div class="feat-card rv">
-        <div class="feat-icon"><svg width="18" height="18" fill="none" stroke="var(--violet-bright)" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
-        <h3>Rollback Plans</h3>
-        <p>Destructive commands get automatic rollback plans. Git reflog recovery, kubectl delete reversal, compose restarts.</p>
-      </div>
-      <div class="feat-card rv">
-        <div class="feat-icon"><svg width="18" height="18" fill="none" stroke="var(--violet-bright)" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><circle cx="6" cy="6" r="1"/><circle cx="6" cy="18" r="1"/></svg></div>
-        <h3>Command History</h3>
-        <p>SQLite-backed searchable log of every action. Browse with <code>orbit history</code>. Powers the diagnostics engine.</p>
-      </div>
-      <div class="feat-card rv">
-        <div class="feat-icon"><svg width="18" height="18" fill="none" stroke="var(--violet-bright)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
-        <h3>Semantic Memory</h3>
-        <p>Optional ChromaDB vector store for semantic search over past actions. Install with <code>orbit-cli[rag]</code>.</p>
-      </div>
-      <div class="feat-card rv">
-        <div class="feat-icon"><svg width="18" height="18" fill="none" stroke="var(--violet-bright)" stroke-width="2"><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.49 8.49l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.49-8.49l2.83-2.83"/></svg></div>
-        <h3>Multi-Provider</h3>
-        <p>Ollama by default. Optional OpenAI and Anthropic providers. Structured output validated against Pydantic schemas.</p>
-      </div>
+      <div class="feat-card"><div class="feat-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg></div><h3>Runbooks</h3><p>Save successful workflows as YAML runbooks. Replay with <code>orbit runbook run</code>. Shareable, version-controllable.</p></div>
+      <div class="feat-card"><div class="feat-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><h3>Diagnostics</h3><p>Run <code>orbit wtf</code> after a failure. Full context analysis with error classification and suggested fixes.</p></div>
+      <div class="feat-card"><div class="feat-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div><h3>Rollback Plans</h3><p>Destructive commands get automatic rollback plans. Git reflog recovery, kubectl reversal, compose restarts.</p></div>
+      <div class="feat-card"><div class="feat-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><circle cx="6" cy="6" r="1"/><circle cx="6" cy="18" r="1"/></svg></div><h3>Command History</h3><p>SQLite-backed searchable log of every action. Browse with <code>orbit history</code>. Powers the diagnostics engine.</p></div>
+      <div class="feat-card"><div class="feat-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><h3>Semantic Memory</h3><p>Optional ChromaDB vector store for semantic search over past actions. Install with <code>orbit-cli[rag]</code>.</p></div>
+      <div class="feat-card"><div class="feat-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.49 8.49l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.49-8.49l2.83-2.83"/></svg></div><h3>Multi-Provider</h3><p>Ollama by default. Optional OpenAI and Anthropic providers. Structured output validated against Pydantic schemas.</p></div>
     </div>
   </div>
 </section>
@@ -1483,18 +1390,18 @@
 <section id="commands">
   <div class="container">
     <div class="section-tag rv">Commands</div>
-    <h2 class="rv">Simple CLI,<br>powerful agent.</h2>
+    <h2 class="rv-clip">Simple CLI,<br>powerful agent.</h2>
     <p class="lead rv">Every command designed for a terminal-first workflow.</p>
     <div class="cmds-grid">
-      <div class="cmd-row rv"><code>orbit do "goal"</code><span>Full agent loop &mdash; scan, plan, execute, replan</span></div>
-      <div class="cmd-row rv"><code>orbit sense</code><span>Scan environment &mdash; see what Orbit sees</span></div>
-      <div class="cmd-row rv"><code>orbit wtf</code><span>Diagnose the last failed command</span></div>
-      <div class="cmd-row rv"><code>orbit ask "question"</code><span>One-shot Q&A with full context</span></div>
-      <div class="cmd-row rv"><code>orbit config doctor</code><span>Verify Ollama connectivity and config health</span></div>
-      <div class="cmd-row rv"><code>orbit config show</code><span>Show current configuration</span></div>
-      <div class="cmd-row rv"><code>orbit runbook list</code><span>List saved runbooks</span></div>
-      <div class="cmd-row rv"><code>orbit runbook run name</code><span>Replay a saved workflow</span></div>
-      <div class="cmd-row rv"><code>orbit history list</code><span>Browse command history</span></div>
+      <div class="cmd-row"><code>orbit do "goal"</code><span>Full agent loop &mdash; scan, plan, execute, replan</span></div>
+      <div class="cmd-row"><code>orbit sense</code><span>Scan environment &mdash; see what Orbit sees</span></div>
+      <div class="cmd-row"><code>orbit wtf</code><span>Diagnose the last failed command</span></div>
+      <div class="cmd-row"><code>orbit ask "question"</code><span>One-shot Q&A with full context</span></div>
+      <div class="cmd-row"><code>orbit config doctor</code><span>Verify Ollama connectivity and config</span></div>
+      <div class="cmd-row"><code>orbit config show</code><span>Show current configuration</span></div>
+      <div class="cmd-row"><code>orbit runbook list</code><span>List saved runbooks</span></div>
+      <div class="cmd-row"><code>orbit runbook run name</code><span>Replay a saved workflow</span></div>
+      <div class="cmd-row"><code>orbit history list</code><span>Browse command history</span></div>
     </div>
   </div>
 </section>
@@ -1502,11 +1409,11 @@
 <!-- ═══════════════ STATS ═══════════════ -->
 <div class="stats-bar">
   <div class="stats-inner">
-    <div class="stat-item rv"><div class="stat-num" data-target="173">0</div><div class="stat-label">Safety Patterns</div></div>
-    <div class="stat-item rv"><div class="stat-num" data-target="300">0</div><div class="stat-label">Tests Passing</div></div>
-    <div class="stat-item rv"><div class="stat-num" data-target="3152">0</div><div class="stat-label">Lines of Code</div></div>
-    <div class="stat-item rv"><div class="stat-num" data-target="56">0</div><div class="stat-label">Modules</div></div>
-    <div class="stat-item rv"><div class="stat-num" data-target="0" data-fixed="0">0</div><div class="stat-label">Cloud Dependencies</div></div>
+    <div class="stat-item"><div class="stat-num" data-target="173">0</div><div class="stat-label">Safety Patterns</div></div>
+    <div class="stat-item"><div class="stat-num" data-target="300">0</div><div class="stat-label">Tests Passing</div></div>
+    <div class="stat-item"><div class="stat-num" data-target="3152">0</div><div class="stat-label">Lines of Code</div></div>
+    <div class="stat-item"><div class="stat-num" data-target="56">0</div><div class="stat-label">Modules</div></div>
+    <div class="stat-item"><div class="stat-num" data-target="0" data-fixed="0">0</div><div class="stat-label">Cloud Dependencies</div></div>
   </div>
 </div>
 
@@ -1514,27 +1421,24 @@
 <section id="install" class="cta-section">
   <div class="container">
     <div class="section-tag rv">Get Started</div>
-    <h2 class="rv">Up and running<br>in 30 seconds.</h2>
-    <p class="lead rv" style="margin:16px auto 56px;">Requires Python 3.11+ and <a href="https://ollama.ai" target="_blank" rel="noopener" style="color:var(--violet-bright);">Ollama</a> running locally.</p>
+    <h2 class="rv-clip">Up and running<br>in 30 seconds.</h2>
+    <p class="lead rv" style="margin:20px auto 60px;">Requires Python 3.11+ and <a href="https://ollama.ai" target="_blank" rel="noopener" style="color:var(--accent);">Ollama</a> running locally.</p>
 
     <div class="install-steps rv">
       <div class="install-row" onclick="copyInstall(this)">
-        <span class="step-n">1</span>
-        <span class="dollar">$</span>
+        <span class="step-n">1</span><span class="dollar">$</span>
         <span class="cmd-text">pip install orbit-cli</span>
         <span class="copied-msg">Copied!</span>
         <button class="copy-icon" aria-label="Copy"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="9" height="9" rx="1.5"/><path d="M5 11H4a1.5 1.5 0 01-1.5-1.5v-6A1.5 1.5 0 014 2h6A1.5 1.5 0 0111.5 3.5V5"/></svg></button>
       </div>
       <div class="install-row" onclick="copyInstall(this)">
-        <span class="step-n">2</span>
-        <span class="dollar">$</span>
+        <span class="step-n">2</span><span class="dollar">$</span>
         <span class="cmd-text">ollama pull qwen2.5:7b</span>
         <span class="copied-msg">Copied!</span>
         <button class="copy-icon" aria-label="Copy"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="9" height="9" rx="1.5"/><path d="M5 11H4a1.5 1.5 0 01-1.5-1.5v-6A1.5 1.5 0 014 2h6A1.5 1.5 0 0111.5 3.5V5"/></svg></button>
       </div>
       <div class="install-row" onclick="copyInstall(this)">
-        <span class="step-n">3</span>
-        <span class="dollar">$</span>
+        <span class="step-n">3</span><span class="dollar">$</span>
         <span class="cmd-text">orbit do "find large files and show disk usage"</span>
         <span class="copied-msg">Copied!</span>
         <button class="copy-icon" aria-label="Copy"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="9" height="9" rx="1.5"/><path d="M5 11H4a1.5 1.5 0 01-1.5-1.5v-6A1.5 1.5 0 014 2h6A1.5 1.5 0 0111.5 3.5V5"/></svg></button>
@@ -1556,9 +1460,9 @@
   <div class="footer-inner">
     <div class="footer-top">
       <div class="footer-brand">
-        <div class="nav-orbit-icon" style="width:22px;height:22px;">
+        <div class="nav-orbit-icon" style="width:20px;height:20px;">
           <div class="ring" style="animation-duration:5s;border-width:1.5px;"></div>
-          <div class="core" style="width:5px;height:5px;"></div>
+          <div class="core" style="width:4px;height:4px;"></div>
         </div>
         Orbit
       </div>
@@ -1574,11 +1478,33 @@
   </div>
 </footer>
 
+<!-- External libs -->
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
 <script>
+// ═══════════════ LENIS SMOOTH SCROLL ═══════════════
+const lenis = new Lenis({
+  duration: 1.2,
+  easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+  touchMultiplier: 2,
+});
+function raf(time) {
+  lenis.raf(time);
+  requestAnimationFrame(raf);
+}
+requestAnimationFrame(raf);
+
+// Sync Lenis with ScrollTrigger
+lenis.on('scroll', ScrollTrigger.update);
+gsap.ticker.add((time) => { lenis.raf(time * 1000); });
+gsap.ticker.lagSmoothing(0);
+
 // ═══════════════ NAV SCROLL ═══════════════
 const nav = document.getElementById('nav');
 window.addEventListener('scroll', () => {
-  nav.classList.toggle('scrolled', window.scrollY > 30);
+  nav.classList.toggle('scrolled', window.scrollY > 40);
 }, { passive: true });
 
 // ═══════════════ HERO CANVAS ═══════════════
@@ -1587,11 +1513,6 @@ window.addEventListener('scroll', () => {
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
   let w, h, particles = [];
-  const colors = [
-    { r:139, g:92, b:246 },
-    { r:6, g:182, b:212 },
-    { r:16, g:185, b:129 },
-  ];
 
   function resize() {
     const rect = canvas.parentElement.getBoundingClientRect();
@@ -1604,33 +1525,30 @@ window.addEventListener('scroll', () => {
   resize();
   window.addEventListener('resize', resize, { passive: true });
 
-  const count = Math.min(80, Math.floor(window.innerWidth / 15));
+  const count = Math.min(60, Math.floor(window.innerWidth / 20));
   for (let i = 0; i < count; i++) {
-    const c = colors[Math.floor(Math.random() * colors.length)];
     particles.push({
       x: Math.random() * 2000, y: Math.random() * 1200,
-      vx: (Math.random() - 0.5) * 0.3,
-      vy: (Math.random() - 0.5) * 0.3,
-      r: Math.random() * 2 + 0.5,
-      color: c,
-      alpha: Math.random() * 0.4 + 0.1,
+      vx: (Math.random() - 0.5) * 0.2,
+      vy: (Math.random() - 0.5) * 0.2,
+      r: Math.random() * 1.5 + 0.3,
+      alpha: Math.random() * 0.2 + 0.05,
     });
   }
 
   function draw() {
     ctx.clearRect(0, 0, w, h);
-    // connections
     for (let i = 0; i < particles.length; i++) {
       for (let j = i + 1; j < particles.length; j++) {
         const dx = particles[i].x - particles[j].x;
         const dy = particles[i].y - particles[j].y;
         const dist = dx * dx + dy * dy;
-        if (dist < 22500) { // 150^2
-          const alpha = (1 - Math.sqrt(dist) / 150) * 0.05;
+        if (dist < 20000) {
+          const alpha = (1 - Math.sqrt(dist) / 141) * 0.035;
           ctx.beginPath();
           ctx.moveTo(particles[i].x, particles[i].y);
           ctx.lineTo(particles[j].x, particles[j].y);
-          ctx.strokeStyle = `rgba(139,92,246,${alpha})`;
+          ctx.strokeStyle = `rgba(255,107,53,${alpha})`;
           ctx.lineWidth = 0.5;
           ctx.stroke();
         }
@@ -1642,7 +1560,7 @@ window.addEventListener('scroll', () => {
       if (p.y < 0 || p.y > h) p.vy *= -1;
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(${p.color.r},${p.color.g},${p.color.b},${p.alpha})`;
+      ctx.fillStyle = `rgba(232,228,221,${p.alpha})`;
       ctx.fill();
     }
     requestAnimationFrame(draw);
@@ -1650,7 +1568,111 @@ window.addEventListener('scroll', () => {
   draw();
 })();
 
-// ═══════════════ TERMINAL TYPING DEMO ═══════════════
+// ═══════════════ GSAP ANIMATIONS ═══════════════
+gsap.registerPlugin(ScrollTrigger);
+
+// Hero entrance
+const heroTl = gsap.timeline({ defaults: { ease: 'power4.out' }});
+heroTl
+  .to('.hero-pill', { opacity: 1, y: 0, duration: 0.8, delay: 0.3 })
+  .to('.hero h1', { opacity: 1, y: 0, duration: 1 }, '-=0.5')
+  .to('.hero-sub', { opacity: 1, y: 0, duration: 0.8 }, '-=0.6')
+  .to('.hero-actions', { opacity: 1, y: 0, duration: 0.8 }, '-=0.5')
+  .to('.terminal', { opacity: 1, y: 0, duration: 1 }, '-=0.4');
+
+// Section h2 clip-path reveal
+gsap.utils.toArray('.rv-clip').forEach(el => {
+  gsap.fromTo(el,
+    { clipPath: 'inset(0 100% 0 0)' },
+    {
+      clipPath: 'inset(0 0% 0 0)',
+      duration: 1.2,
+      ease: 'power3.inOut',
+      scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none none' }
+    }
+  );
+});
+
+// Section tags and leads
+gsap.utils.toArray('.rv').forEach(el => {
+  gsap.fromTo(el,
+    { opacity: 0, y: 24 },
+    {
+      opacity: 1, y: 0,
+      duration: 0.8,
+      ease: 'power3.out',
+      scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none none' }
+    }
+  );
+});
+
+// Why cards — staggered
+gsap.utils.toArray('.why-card').forEach((card, i) => {
+  gsap.to(card, {
+    opacity: 1, y: 0,
+    duration: 0.8,
+    delay: i * 0.08,
+    ease: 'power3.out',
+    scrollTrigger: { trigger: '.why-grid', start: 'top 80%', toggleActions: 'play none none none' }
+  });
+});
+
+// Pipeline steps
+gsap.utils.toArray('.pipe-step').forEach((step, i) => {
+  gsap.to(step, {
+    opacity: 1, y: 0,
+    duration: 0.7,
+    delay: i * 0.1,
+    ease: 'power3.out',
+    scrollTrigger: { trigger: '.pipeline-track', start: 'top 80%', toggleActions: 'play none none none' }
+  });
+});
+
+// Tier cards
+gsap.utils.toArray('.tier-card').forEach((card, i) => {
+  gsap.to(card, {
+    opacity: 1, y: 0,
+    duration: 0.7,
+    delay: i * 0.08,
+    ease: 'power3.out',
+    scrollTrigger: { trigger: '.tiers-grid', start: 'top 80%', toggleActions: 'play none none none' }
+  });
+});
+
+// Feature cards
+gsap.utils.toArray('.feat-card').forEach((card, i) => {
+  gsap.to(card, {
+    opacity: 1, y: 0,
+    duration: 0.7,
+    delay: i * 0.08,
+    ease: 'power3.out',
+    scrollTrigger: { trigger: '.feat-grid', start: 'top 80%', toggleActions: 'play none none none' }
+  });
+});
+
+// Route cards
+gsap.utils.toArray('.route-card').forEach((card, i) => {
+  gsap.to(card, {
+    opacity: 1, y: 0,
+    duration: 0.7,
+    delay: i * 0.1,
+    ease: 'power3.out',
+    scrollTrigger: { trigger: '.routing-grid', start: 'top 80%', toggleActions: 'play none none none' }
+  });
+});
+
+// Command rows
+gsap.utils.toArray('.cmd-row').forEach((row, i) => {
+  gsap.to(row, {
+    opacity: 1, y: 0,
+    duration: 0.6,
+    delay: i * 0.05,
+    ease: 'power3.out',
+    scrollTrigger: { trigger: '.cmds-grid', start: 'top 80%', toggleActions: 'play none none none' }
+  });
+});
+
+// ═══════════════ TERMINAL TYPING ═══════════════
 const demos = [
   [
     { type: 'cmd', prompt: '$ ', cmd: 'orbit do ', arg: '"find why my pods are crashing and fix it"' },
@@ -1728,7 +1750,6 @@ function renderDemo(idx) {
     if (item.type === 'blank') {
       line.innerHTML = '<br>';
     } else if (item.type === 'cmd') {
-      // Character-by-character typing for commands
       const fullText = (item.arg || '');
       const promptEl = document.createElement('span');
       promptEl.className = 't-prompt';
@@ -1796,7 +1817,7 @@ document.querySelectorAll('.terminal-tab').forEach(tab => {
 });
 renderDemo(0);
 
-// ═══════════════ INTERACTIVE CLASSIFIER ═══════════════
+// ═══════════════ CLASSIFIER ═══════════════
 const safePatterns = [
   /^(ls|cat|head|tail|less|more|wc|file|stat|echo|printf|whoami|hostname|date|cal|uptime|uname|pwd|which|where|type|man|help)\b/,
   /^git\s+(log|status|diff|show|branch|tag|remote|stash\s+list|blame|shortlog)\b/,
@@ -1846,7 +1867,6 @@ function classifyCommand(cmd) {
 
 const classifierInput = document.getElementById('classifierInput');
 const classifierResult = document.getElementById('classifierResult');
-
 const tierInfo = {
   safe: { badge: 'badge-safe', label: 'SAFE', desc: 'Runs silently, no confirmation needed' },
   caution: { badge: 'badge-caution', label: 'CAUTION', desc: 'Single confirmation [y/N]' },
@@ -1863,10 +1883,7 @@ classifierInput.addEventListener('input', () => {
   }
   const tier = classifyCommand(val);
   const info = tierInfo[tier] || tierInfo.unknown;
-  classifierResult.innerHTML = `
-    <span class="tier-desc">${info.desc}</span>
-    <span class="tier-badge ${info.badge}">${info.label}</span>
-  `;
+  classifierResult.innerHTML = `<span class="tier-desc">${info.desc}</span><span class="tier-badge ${info.badge}">${info.label}</span>`;
 });
 
 // ═══════════════ COPY INSTALL ═══════════════
@@ -1878,25 +1895,6 @@ function copyInstall(el) {
   });
 }
 
-// ═══════════════ SCROLL REVEAL ═══════════════
-const revealObs = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('vis');
-      revealObs.unobserve(entry.target);
-    }
-  });
-}, { threshold: 0.06, rootMargin: '0px 0px -30px 0px' });
-
-document.querySelectorAll('.rv').forEach(el => revealObs.observe(el));
-
-// Stagger grid children
-document.querySelectorAll('.why-grid, .tiers-grid, .feat-grid, .cmds-grid, .routing-grid').forEach(grid => {
-  Array.from(grid.children).forEach((child, i) => {
-    child.style.transitionDelay = `${i * 0.07}s`;
-  });
-});
-
 // ═══════════════ COUNTER ANIMATION ═══════════════
 const counterObs = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
@@ -1904,7 +1902,7 @@ const counterObs = new IntersectionObserver((entries) => {
       const el = entry.target;
       const target = parseInt(el.dataset.target);
       if (el.dataset.fixed !== undefined) { el.textContent = el.dataset.fixed; counterObs.unobserve(el); return; }
-      const duration = 1800;
+      const duration = 2000;
       const start = performance.now();
       function tick(now) {
         const progress = Math.min((now - start) / duration, 1);
