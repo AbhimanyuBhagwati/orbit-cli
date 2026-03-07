@@ -1,0 +1,1930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Orbit — Local-first DevOps CLI Agent</title>
+  <meta name="description" content="Turn natural language into safe, observable DevOps actions. 100% local, multi-model, regex-only safety. Nothing leaves your machine." />
+  <meta property="og:title" content="Orbit — Local-first DevOps CLI Agent" />
+  <meta property="og:description" content="Turn natural language into safe, observable DevOps actions. Multi-model routing, regex-only safety, auto-replanning — all on your machine." />
+  <meta property="og:type" content="website" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --void: #030308;
+      --deep: #07070f;
+      --surface: #0b0b16;
+      --elevated: #10101f;
+      --elevated-hover: #16162a;
+      --border: rgba(255,255,255,0.04);
+      --border-lit: rgba(255,255,255,0.08);
+      --border-bright: rgba(255,255,255,0.12);
+      --text: #e4e4ec;
+      --text-secondary: #8585a0;
+      --text-tertiary: #4e4e6a;
+      --violet: #8b5cf6;
+      --violet-bright: #a78bfa;
+      --violet-glow: rgba(139,92,246,0.15);
+      --violet-glow-strong: rgba(139,92,246,0.3);
+      --cyan: #06b6d4;
+      --cyan-bright: #22d3ee;
+      --cyan-glow: rgba(6,182,212,0.12);
+      --emerald: #10b981;
+      --emerald-bright: #34d399;
+      --emerald-glow: rgba(16,185,129,0.12);
+      --amber: #f59e0b;
+      --amber-bright: #fbbf24;
+      --amber-glow: rgba(245,158,11,0.12);
+      --rose: #f43f5e;
+      --rose-bright: #fb7185;
+      --rose-glow: rgba(244,63,94,0.12);
+      --font-display: 'Outfit', sans-serif;
+      --font-body: 'Instrument Sans', sans-serif;
+      --font-mono: 'Space Mono', monospace;
+      --radius: 16px;
+      --radius-sm: 10px;
+      --radius-xs: 6px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--void);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    ::selection { background: var(--violet-glow-strong); color: #fff; }
+
+    .container { max-width: 1180px; margin: 0 auto; padding: 0 28px; }
+
+    /* ═══════════════════════════════ NAV ═══════════════════════════════ */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      padding: 0 28px;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    nav.scrolled {
+      background: rgba(3,3,8,0.82);
+      backdrop-filter: blur(20px) saturate(1.4);
+      -webkit-backdrop-filter: blur(20px) saturate(1.4);
+    }
+    .nav-inner {
+      max-width: 1180px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 68px;
+      border-bottom: 1px solid var(--border);
+      transition: border-color 0.4s;
+    }
+    nav.scrolled .nav-inner { border-bottom-color: var(--border-lit); }
+
+    .nav-brand {
+      display: flex; align-items: center; gap: 12px;
+      font-family: var(--font-display);
+      font-weight: 800; font-size: 1.25rem;
+      letter-spacing: -0.03em;
+    }
+    .nav-orbit-icon {
+      width: 32px; height: 32px;
+      position: relative;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .nav-orbit-icon .ring {
+      width: 100%; height: 100%;
+      border: 2px solid var(--violet);
+      border-radius: 50%;
+      animation: orbitSpin 6s linear infinite;
+      position: absolute;
+    }
+    .nav-orbit-icon .ring::after {
+      content: '';
+      width: 7px; height: 7px;
+      background: var(--cyan-bright);
+      border-radius: 50%;
+      position: absolute;
+      top: -3.5px; left: 50%; transform: translateX(-50%);
+      box-shadow: 0 0 10px var(--cyan), 0 0 20px rgba(6,182,212,0.3);
+    }
+    .nav-orbit-icon .core {
+      width: 8px; height: 8px;
+      background: var(--violet-bright);
+      border-radius: 50%;
+      box-shadow: 0 0 12px var(--violet);
+      position: relative; z-index: 1;
+    }
+    @keyframes orbitSpin { to { transform: rotate(360deg); } }
+
+    .nav-links {
+      display: flex; align-items: center; gap: 36px;
+    }
+    .nav-links a {
+      font-size: 0.85rem; font-weight: 500;
+      color: var(--text-secondary);
+      transition: color 0.25s;
+      position: relative;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a::after {
+      content: '';
+      position: absolute; bottom: -4px; left: 0; right: 0;
+      height: 1px;
+      background: var(--violet);
+      transform: scaleX(0);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .nav-links a:hover::after { transform: scaleX(1); }
+
+    .nav-github {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 16px; border-radius: var(--radius-xs);
+      border: 1px solid var(--border-lit);
+      font-size: 0.82rem; font-weight: 600;
+      color: var(--text-secondary);
+      transition: all 0.3s;
+    }
+    .nav-github:hover {
+      border-color: var(--violet);
+      color: var(--violet-bright);
+      background: var(--violet-glow);
+    }
+    .nav-github svg { width: 16px; height: 16px; }
+
+    .nav-toggle {
+      display: none; background: none; border: none;
+      color: var(--text); cursor: pointer; padding: 8px;
+    }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .nav-links.open {
+        display: flex; flex-direction: column;
+        position: absolute; top: 68px; left: 0; right: 0;
+        background: rgba(3,3,8,0.97);
+        backdrop-filter: blur(24px);
+        padding: 24px 28px; gap: 20px;
+        border-bottom: 1px solid var(--border-lit);
+      }
+      .nav-links a::after { display: none; }
+      .nav-toggle { display: block; }
+    }
+
+    /* ═══════════════════════════════ HERO ═══════════════════════════════ */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      position: relative;
+      padding: 120px 28px 80px;
+      overflow: hidden;
+    }
+
+    .hero-canvas-wrap {
+      position: absolute; inset: 0;
+      pointer-events: none;
+    }
+    #heroCanvas {
+      width: 100%; height: 100%;
+    }
+
+    /* Gradient orbs */
+    .hero-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      pointer-events: none;
+      opacity: 0.4;
+    }
+    .hero-orb-1 {
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(139,92,246,0.25) 0%, transparent 70%);
+      top: -200px; left: -100px;
+      animation: orbFloat1 20s ease-in-out infinite;
+    }
+    .hero-orb-2 {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(6,182,212,0.2) 0%, transparent 70%);
+      top: 100px; right: -150px;
+      animation: orbFloat2 25s ease-in-out infinite;
+    }
+    .hero-orb-3 {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(16,185,129,0.15) 0%, transparent 70%);
+      bottom: -100px; left: 30%;
+      animation: orbFloat3 18s ease-in-out infinite;
+    }
+    @keyframes orbFloat1 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(60px, 40px) scale(1.1); }
+      66% { transform: translate(-30px, 80px) scale(0.95); }
+    }
+    @keyframes orbFloat2 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(-80px, 60px) scale(1.15); }
+    }
+    @keyframes orbFloat3 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(50px, -40px) scale(1.1); }
+    }
+
+    /* Grid lines */
+    .hero::after {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        linear-gradient(rgba(139,92,246,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(139,92,246,0.02) 1px, transparent 1px);
+      background-size: 80px 80px;
+      mask-image: radial-gradient(ellipse 60% 50% at 50% 40%, black 10%, transparent 70%);
+      -webkit-mask-image: radial-gradient(ellipse 60% 50% at 50% 40%, black 10%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-content { position: relative; z-index: 2; max-width: 840px; }
+
+    .hero-pill {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 6px 20px 6px 14px;
+      border-radius: 999px;
+      background: rgba(16,185,129,0.06);
+      border: 1px solid rgba(16,185,129,0.15);
+      font-size: 0.78rem; font-weight: 500;
+      color: var(--emerald-bright);
+      margin-bottom: 40px;
+      animation: heroFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+    }
+    .hero-pill .dot {
+      width: 6px; height: 6px;
+      background: var(--emerald);
+      border-radius: 50%;
+      position: relative;
+    }
+    .hero-pill .dot::after {
+      content: '';
+      position: absolute; inset: -4px;
+      border-radius: 50%;
+      background: var(--emerald);
+      animation: dotPulse 2s ease-in-out infinite;
+      opacity: 0;
+    }
+    @keyframes dotPulse {
+      0% { transform: scale(1); opacity: 0.5; }
+      100% { transform: scale(3); opacity: 0; }
+    }
+
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(3.2rem, 8vw, 5.5rem);
+      font-weight: 900;
+      letter-spacing: -0.05em;
+      line-height: 1.0;
+      margin-bottom: 28px;
+      animation: heroFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.35s both;
+    }
+    .hero h1 .shimmer {
+      background: linear-gradient(
+        135deg,
+        var(--violet-bright) 0%,
+        var(--cyan-bright) 40%,
+        var(--emerald-bright) 70%,
+        var(--violet-bright) 100%
+      );
+      background-size: 300% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmerSlide 6s ease-in-out infinite;
+    }
+    @keyframes shimmerSlide {
+      0%, 100% { background-position: 0% center; }
+      50% { background-position: 100% center; }
+    }
+
+    .hero-sub {
+      font-size: clamp(1.05rem, 2vw, 1.3rem);
+      color: var(--text-secondary);
+      max-width: 560px;
+      margin: 0 auto 48px;
+      line-height: 1.7;
+      animation: heroFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both;
+    }
+
+    @keyframes heroFadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-actions {
+      display: flex; align-items: center; justify-content: center;
+      gap: 14px; flex-wrap: wrap;
+      animation: heroFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.65s both;
+    }
+
+    .btn-glow {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 14px 32px; border-radius: 12px;
+      font-family: var(--font-body);
+      font-size: 0.95rem; font-weight: 600;
+      border: none; cursor: pointer;
+      position: relative; overflow: hidden;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--violet) 0%, #7c3aed 100%);
+      color: #fff;
+      box-shadow: 0 0 0 1px rgba(139,92,246,0.3), 0 4px 24px rgba(139,92,246,0.2);
+    }
+    .btn-primary::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, transparent 30%, rgba(255,255,255,0.12) 50%, transparent 70%);
+      background-size: 300% 100%;
+      animation: btnSheen 4s ease-in-out infinite;
+    }
+    @keyframes btnSheen {
+      0% { background-position: 200% center; }
+      100% { background-position: -100% center; }
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 0 1px rgba(139,92,246,0.5), 0 8px 40px rgba(139,92,246,0.35);
+    }
+    .btn-outline {
+      background: var(--elevated);
+      color: var(--text);
+      border: 1px solid var(--border-lit);
+    }
+    .btn-outline:hover {
+      border-color: var(--border-bright);
+      background: var(--elevated-hover);
+      transform: translateY(-2px);
+    }
+    .btn-glow svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+    /* ── Terminal Demo ── */
+    .terminal {
+      max-width: 780px; width: 100%; margin: 56px auto 0;
+      border-radius: var(--radius);
+      border: 1px solid var(--border-lit);
+      background: rgba(7,7,15,0.85);
+      backdrop-filter: blur(12px);
+      box-shadow:
+        0 0 0 1px rgba(139,92,246,0.04),
+        0 32px 100px rgba(0,0,0,0.6),
+        inset 0 1px 0 rgba(255,255,255,0.03);
+      overflow: hidden;
+      animation: heroFadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.8s both;
+    }
+    .terminal-chrome {
+      display: flex; align-items: center; gap: 8px;
+      padding: 14px 20px;
+      background: rgba(16,16,31,0.5);
+      border-bottom: 1px solid var(--border);
+    }
+    .terminal-dot { width: 12px; height: 12px; border-radius: 50%; }
+    .terminal-dot:nth-child(1) { background: #ff5f57; }
+    .terminal-dot:nth-child(2) { background: #febc2e; }
+    .terminal-dot:nth-child(3) { background: #28c840; }
+    .terminal-title {
+      flex: 1; text-align: center;
+      font-family: var(--font-mono); font-size: 0.7rem;
+      color: var(--text-tertiary);
+    }
+
+    .terminal-tabs {
+      display: flex; border-bottom: 1px solid var(--border);
+      background: rgba(11,11,22,0.4);
+    }
+    .terminal-tab {
+      padding: 10px 22px;
+      font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      border: none; background: none;
+      border-bottom: 2px solid transparent;
+      transition: all 0.25s;
+    }
+    .terminal-tab:hover { color: var(--text-secondary); }
+    .terminal-tab.active {
+      color: var(--violet-bright);
+      border-bottom-color: var(--violet);
+      background: rgba(139,92,246,0.04);
+    }
+
+    .terminal-body {
+      padding: 24px 28px;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      line-height: 1.95;
+      min-height: 300px;
+      position: relative;
+    }
+    .t-line { display: block; white-space: pre-wrap; word-break: break-all; }
+    .t-prompt { color: var(--emerald-bright); }
+    .t-cmd { color: var(--text); font-weight: 700; }
+    .t-arg { color: var(--violet-bright); }
+    .t-dim { color: var(--text-tertiary); }
+    .t-out { color: var(--text-secondary); }
+    .t-label { color: var(--amber-bright); font-weight: 700; }
+    .t-safe { color: var(--emerald-bright); font-weight: 700; }
+    .t-caution { color: var(--amber-bright); font-weight: 700; }
+    .t-destructive { color: var(--rose-bright); font-weight: 700; }
+    .t-step { color: var(--cyan-bright); font-weight: 700; }
+    .t-cursor {
+      display: inline-block; width: 8px; height: 17px;
+      background: var(--violet-bright);
+      animation: cursorBlink 1s step-end infinite;
+      vertical-align: text-bottom;
+      margin-left: 2px;
+    }
+    @keyframes cursorBlink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+
+    /* ═══════════════════════════════ SECTIONS ═══════════════════════════════ */
+    section { padding: 140px 0; position: relative; }
+
+    .section-tag {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-family: var(--font-mono);
+      font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--violet-bright);
+      margin-bottom: 20px;
+    }
+    .section-tag::before {
+      content: '';
+      width: 32px; height: 1px;
+      background: linear-gradient(90deg, var(--violet), transparent);
+    }
+
+    section h2 {
+      font-family: var(--font-display);
+      font-size: clamp(2.4rem, 5vw, 3.4rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1.08;
+      margin-bottom: 16px;
+    }
+    section .lead {
+      font-size: 1.1rem; color: var(--text-secondary);
+      max-width: 540px; line-height: 1.7;
+      margin-bottom: 72px;
+    }
+
+    /* ── Reveal animations ── */
+    .rv {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .rv.vis {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ═══════════════════════════════ WHY ORBIT ═══════════════════════════════ */
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    @media (max-width: 900px) { .why-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 600px) { .why-grid { grid-template-columns: 1fr; } }
+
+    .why-card {
+      background: var(--surface);
+      padding: 36px 28px;
+      transition: background 0.4s;
+      position: relative;
+    }
+    .why-card:hover { background: var(--elevated); }
+    .why-card::before {
+      content: '';
+      position: absolute; top: 0; left: 24px; right: 24px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--card-color, var(--violet)), transparent);
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+    .why-card:hover::before { opacity: 0.5; }
+
+    .why-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px;
+      font-size: 1.2rem;
+    }
+    .why-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.05rem; font-weight: 700;
+      margin-bottom: 6px; letter-spacing: -0.02em;
+    }
+    .why-card .problem {
+      font-size: 0.78rem; color: var(--text-tertiary);
+      margin-bottom: 12px; line-height: 1.5;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .why-card .solution {
+      font-size: 0.84rem; color: var(--text-secondary); line-height: 1.65;
+    }
+    .why-card .solution strong { color: var(--emerald-bright); font-weight: 600; }
+
+    /* ═══════════════════════════════ PIPELINE ═══════════════════════════════ */
+    .pipeline-section {
+      background: linear-gradient(180deg, var(--void) 0%, var(--deep) 40%, var(--void) 100%);
+      overflow: hidden;
+    }
+    .pipeline-section .orb-bg {
+      position: absolute;
+      width: 500px; height: 500px;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+      opacity: 0.3;
+    }
+    .pipeline-section .orb-bg-1 {
+      background: radial-gradient(circle, rgba(139,92,246,0.2) 0%, transparent 70%);
+      top: 10%; right: -10%;
+    }
+    .pipeline-section .orb-bg-2 {
+      background: radial-gradient(circle, rgba(6,182,212,0.15) 0%, transparent 70%);
+      bottom: 10%; left: -10%;
+    }
+
+    .pipeline-track {
+      max-width: 720px; margin: 0 auto;
+      position: relative;
+    }
+    .pipeline-track::before {
+      content: '';
+      position: absolute;
+      left: 31px; top: 0; bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg,
+        var(--violet) 0%,
+        var(--cyan) 25%,
+        var(--emerald) 50%,
+        var(--violet) 75%,
+        var(--cyan) 100%);
+      opacity: 0.12;
+    }
+
+    .pipe-step {
+      display: flex; gap: 24px;
+      padding: 28px;
+      margin-bottom: 6px;
+      border-radius: var(--radius);
+      border: 1px solid transparent;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+    }
+    .pipe-step:hover {
+      border-color: var(--border-lit);
+      background: rgba(16,16,31,0.4);
+      transform: translateX(6px);
+    }
+
+    .pipe-num {
+      flex-shrink: 0;
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 0.82rem; font-weight: 700;
+      position: relative; z-index: 1;
+    }
+    .pipe-step:hover .pipe-num {
+      box-shadow: 0 0 20px currentColor;
+    }
+
+    .pipe-body h3 {
+      font-family: var(--font-display);
+      font-size: 1.05rem; font-weight: 700;
+      margin-bottom: 6px; letter-spacing: -0.01em;
+    }
+    .pipe-body p {
+      font-size: 0.84rem; color: var(--text-secondary); line-height: 1.65;
+    }
+    .pipe-tags { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
+    .pipe-tag {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 10px; border-radius: 999px;
+      font-family: var(--font-mono);
+      font-size: 0.62rem; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+    }
+    .pipe-tag::before {
+      content: '';
+      width: 5px; height: 5px; border-radius: 50%;
+    }
+    .pipe-tag.det {
+      background: var(--emerald-glow);
+      color: var(--emerald-bright);
+      border: 1px solid rgba(16,185,129,0.15);
+    }
+    .pipe-tag.det::before { background: var(--emerald); }
+    .pipe-tag.llm {
+      background: var(--violet-glow);
+      color: var(--violet-bright);
+      border: 1px solid rgba(139,92,246,0.15);
+    }
+    .pipe-tag.llm::before { background: var(--violet); }
+
+    .pipe-legend {
+      display: flex; justify-content: center; gap: 32px;
+      margin-top: 40px;
+      font-size: 0.78rem; color: var(--text-secondary);
+    }
+    .pipe-legend span { display: inline-flex; align-items: center; gap: 8px; }
+    .pipe-legend .ldot { width: 8px; height: 8px; border-radius: 50%; }
+    .pipe-legend .ldot.det { background: var(--emerald); }
+    .pipe-legend .ldot.llm { background: var(--violet); }
+
+    /* ═══════════════════════════════ SAFETY ═══════════════════════════════ */
+    .safety-section { overflow: hidden; }
+
+    .tiers-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 56px;
+    }
+    @media (max-width: 900px) { .tiers-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 500px) { .tiers-grid { grid-template-columns: 1fr; } }
+
+    .tier-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px 20px;
+      text-align: center;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    .tier-card::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 2px;
+      opacity: 0; transition: opacity 0.4s;
+    }
+    .tier-card:hover {
+      border-color: var(--border-lit);
+      transform: translateY(-6px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    .tier-card:hover::after { opacity: 1; }
+
+    .tier-icon {
+      width: 48px; height: 48px; border-radius: 14px;
+      margin: 0 auto 16px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+      transition: transform 0.3s;
+    }
+    .tier-card:hover .tier-icon { transform: scale(1.12) rotate(-4deg); }
+
+    .tier-card h3 {
+      font-family: var(--font-display);
+      font-size: 0.85rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      margin-bottom: 8px;
+    }
+    .tier-card .tier-action {
+      font-size: 0.78rem; color: var(--text-secondary);
+      margin-bottom: 16px; line-height: 1.5;
+    }
+    .tier-card .tier-example {
+      font-family: var(--font-mono); font-size: 0.68rem;
+      padding: 6px 12px; border-radius: var(--radius-xs);
+      background: var(--void);
+      color: var(--text-secondary);
+      display: inline-block;
+      border: 1px solid var(--border);
+    }
+
+    .tier-safe .tier-icon { background: var(--emerald-glow); color: var(--emerald); border: 1px solid rgba(16,185,129,0.15); }
+    .tier-safe h3 { color: var(--emerald-bright); }
+    .tier-safe::after { background: var(--emerald); }
+    .tier-caution .tier-icon { background: var(--amber-glow); color: var(--amber); border: 1px solid rgba(245,158,11,0.15); }
+    .tier-caution h3 { color: var(--amber-bright); }
+    .tier-caution::after { background: var(--amber); }
+    .tier-destructive .tier-icon { background: rgba(251,146,60,0.1); color: #fb923c; border: 1px solid rgba(251,146,60,0.15); }
+    .tier-destructive h3 { color: #fdba74; }
+    .tier-destructive::after { background: #fb923c; }
+    .tier-nuclear .tier-icon { background: var(--rose-glow); color: var(--rose); border: 1px solid rgba(244,63,94,0.15); }
+    .tier-nuclear h3 { color: var(--rose-bright); }
+    .tier-nuclear::after { background: var(--rose); }
+
+    /* Interactive classifier */
+    .classifier-demo {
+      max-width: 600px; margin: 0 auto 56px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border-lit);
+      background: var(--surface);
+      overflow: hidden;
+    }
+    .classifier-header {
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 10px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem; font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .classifier-header svg { width: 14px; height: 14px; color: var(--violet-bright); }
+    .classifier-input-wrap {
+      display: flex; align-items: center;
+      padding: 0 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .classifier-dollar {
+      font-family: var(--font-mono); font-size: 0.85rem;
+      color: var(--emerald-bright); font-weight: 700;
+      margin-right: 12px;
+    }
+    #classifierInput {
+      flex: 1;
+      background: none; border: none;
+      font-family: var(--font-mono); font-size: 0.85rem;
+      color: var(--text); padding: 18px 0;
+      outline: none;
+    }
+    #classifierInput::placeholder { color: var(--text-tertiary); }
+    .classifier-result {
+      padding: 18px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      min-height: 60px;
+    }
+    .classifier-result .tier-badge {
+      padding: 5px 14px; border-radius: 999px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .classifier-result .tier-desc {
+      font-size: 0.8rem; color: var(--text-secondary);
+    }
+    .badge-safe { background: var(--emerald-glow); color: var(--emerald-bright); border: 1px solid rgba(16,185,129,0.2); }
+    .badge-caution { background: var(--amber-glow); color: var(--amber-bright); border: 1px solid rgba(245,158,11,0.2); }
+    .badge-destructive { background: rgba(251,146,60,0.1); color: #fdba74; border: 1px solid rgba(251,146,60,0.2); }
+    .badge-nuclear { background: var(--rose-glow); color: var(--rose-bright); border: 1px solid rgba(244,63,94,0.2); }
+    .badge-unknown { background: rgba(78,78,106,0.2); color: var(--text-secondary); border: 1px solid rgba(78,78,106,0.3); }
+
+    /* Production escalation */
+    .escalation-demo {
+      max-width: 650px; margin: 0 auto;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      overflow: hidden;
+    }
+    .escalation-header {
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 10px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem; font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .esc-row {
+      display: grid; grid-template-columns: 1fr auto auto;
+      align-items: center; gap: 16px;
+      padding: 14px 24px;
+      border-bottom: 1px solid var(--border);
+      font-family: var(--font-mono); font-size: 0.78rem;
+      transition: background 0.3s;
+    }
+    .esc-row:last-child { border-bottom: none; }
+    .esc-row:hover { background: rgba(139,92,246,0.02); }
+    .esc-cmd { color: var(--text); font-weight: 700; }
+    .esc-ctx { color: var(--text-tertiary); font-size: 0.68rem; margin-top: 3px; font-weight: 400; }
+    .esc-arrow {
+      display: flex; align-items: center; gap: 4px;
+      font-family: var(--font-body);
+      font-size: 0.65rem; font-weight: 700;
+      color: var(--rose);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    /* ── Callout ── */
+    .callout-box {
+      max-width: 650px; margin: 56px auto 0;
+      padding: 24px 28px;
+      border-radius: var(--radius-sm);
+      background: var(--elevated);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--violet);
+      display: flex; gap: 16px;
+    }
+    .callout-box .callout-icon { flex-shrink: 0; margin-top: 2px; }
+    .callout-box h4 {
+      font-family: var(--font-display);
+      font-size: 0.95rem; font-weight: 700; margin-bottom: 6px;
+    }
+    .callout-box p { font-size: 0.84rem; color: var(--text-secondary); line-height: 1.65; }
+
+    /* ═══════════════════════════════ FEATURES ═══════════════════════════════ */
+    .features-section {
+      background: linear-gradient(180deg, var(--void) 0%, var(--deep) 50%, var(--void) 100%);
+    }
+    .feat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    @media (max-width: 900px) { .feat-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 600px) { .feat-grid { grid-template-columns: 1fr; } }
+
+    .feat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px 24px;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+    }
+    .feat-card:hover {
+      border-color: var(--border-lit);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    }
+    .feat-icon {
+      width: 42px; height: 42px; border-radius: 11px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 18px;
+      background: var(--violet-glow);
+      border: 1px solid rgba(139,92,246,0.12);
+    }
+    .feat-card h3 {
+      font-family: var(--font-display);
+      font-size: 1rem; font-weight: 700; margin-bottom: 8px;
+    }
+    .feat-card p {
+      font-size: 0.84rem; color: var(--text-secondary); line-height: 1.65;
+    }
+    .feat-card code {
+      background: var(--void); padding: 2px 7px;
+      border-radius: 4px; font-size: 0.74rem;
+      color: var(--cyan-bright); font-family: var(--font-mono);
+      border: 1px solid var(--border);
+    }
+
+    /* ═══════════════════════════════ ROUTING ═══════════════════════════════ */
+    .routing-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+    @media (max-width: 900px) { .routing-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 500px) { .routing-grid { grid-template-columns: 1fr; } }
+
+    .route-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 20px;
+      text-align: center;
+      transition: all 0.35s;
+    }
+    .route-card:hover {
+      border-color: var(--border-lit);
+      transform: translateY(-4px);
+    }
+    .route-card .cap {
+      font-family: var(--font-mono);
+      font-size: 0.82rem; font-weight: 700;
+      color: var(--cyan-bright);
+      margin-bottom: 8px;
+    }
+    .route-card .desc {
+      font-size: 0.8rem; color: var(--text-secondary);
+      margin-bottom: 14px; line-height: 1.5;
+    }
+    .route-card .models {
+      font-family: var(--font-mono);
+      font-size: 0.68rem; color: var(--text-tertiary);
+      margin-bottom: 10px;
+    }
+    .route-card .size-badge {
+      display: inline-block;
+      padding: 3px 10px; border-radius: 999px;
+      font-family: var(--font-mono);
+      font-size: 0.65rem; font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .sz-sm { background: var(--emerald-glow); color: var(--emerald-bright); border: 1px solid rgba(16,185,129,0.15); }
+    .sz-md { background: var(--amber-glow); color: var(--amber-bright); border: 1px solid rgba(245,158,11,0.15); }
+    .sz-lg { background: rgba(251,146,60,0.1); color: #fdba74; border: 1px solid rgba(251,146,60,0.15); }
+    .sz-any { background: var(--violet-glow); color: var(--violet-bright); border: 1px solid rgba(139,92,246,0.15); }
+
+    /* ═══════════════════════════════ COMMANDS ═══════════════════════════════ */
+    .cmds-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+    @media (max-width: 700px) { .cmds-grid { grid-template-columns: 1fr; } }
+
+    .cmd-row {
+      display: flex; align-items: center; gap: 16px;
+      padding: 16px 22px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      transition: all 0.3s;
+    }
+    .cmd-row:hover {
+      border-color: var(--border-lit);
+      transform: translateX(4px);
+      background: var(--elevated);
+    }
+    .cmd-row code {
+      font-family: var(--font-mono);
+      font-size: 0.82rem; font-weight: 700;
+      color: var(--cyan-bright);
+      white-space: nowrap; min-width: 190px;
+    }
+    .cmd-row span { font-size: 0.82rem; color: var(--text-secondary); }
+
+    /* ═══════════════════════════════ STATS ═══════════════════════════════ */
+    .stats-bar {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--deep);
+    }
+    .stats-inner {
+      display: flex; justify-content: center;
+      gap: 72px; padding: 60px 28px;
+      flex-wrap: wrap;
+      max-width: 1180px; margin: 0 auto;
+    }
+    .stat-item { text-align: center; }
+    .stat-num {
+      font-family: var(--font-display);
+      font-size: clamp(2.4rem, 4vw, 3rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .stat-item:nth-child(1) .stat-num { color: var(--violet-bright); }
+    .stat-item:nth-child(2) .stat-num { color: var(--emerald-bright); }
+    .stat-item:nth-child(3) .stat-num { color: var(--cyan-bright); }
+    .stat-item:nth-child(4) .stat-num { color: var(--amber-bright); }
+    .stat-item:nth-child(5) .stat-num { color: var(--rose-bright); }
+    .stat-label {
+      font-size: 0.8rem; color: var(--text-tertiary);
+      font-weight: 500;
+    }
+
+    /* ═══════════════════════════════ CTA ═══════════════════════════════ */
+    .cta-section {
+      text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 800px; height: 400px;
+      background: radial-gradient(ellipse, rgba(139,92,246,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .cta-section .lead { margin: 16px auto 56px; }
+
+    .install-steps {
+      display: flex; flex-direction: column;
+      gap: 8px; max-width: 520px; margin: 0 auto 40px;
+    }
+    .install-row {
+      display: flex; align-items: center;
+      padding: 14px 22px;
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      font-family: var(--font-mono); font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.25s;
+      position: relative;
+    }
+    .install-row:hover { border-color: var(--border-lit); background: var(--elevated); }
+    .install-row .step-n {
+      color: var(--text-tertiary); font-size: 0.68rem; font-weight: 700;
+      margin-right: 16px; min-width: 14px;
+    }
+    .install-row .dollar { color: var(--emerald-bright); margin-right: 10px; }
+    .install-row .cmd-text { color: var(--text); flex: 1; }
+    .install-row .copy-icon {
+      background: none; border: none; cursor: pointer;
+      color: var(--text-tertiary); padding: 4px;
+      transition: color 0.2s;
+    }
+    .install-row .copy-icon:hover { color: var(--text); }
+    .install-row .copied-msg {
+      position: absolute; right: 22px;
+      font-size: 0.7rem; color: var(--emerald-bright);
+      font-weight: 600; font-family: var(--font-body);
+      opacity: 0; transition: opacity 0.2s;
+    }
+    .install-row.copied .copied-msg { opacity: 1; }
+    .install-row.copied .copy-icon { opacity: 0; }
+
+    .extras-line {
+      color: var(--text-tertiary); font-size: 0.82rem; line-height: 2;
+    }
+    .extras-line code {
+      background: var(--elevated); border: 1px solid var(--border);
+      padding: 2px 8px; border-radius: 4px;
+      font-family: var(--font-mono); font-size: 0.72rem;
+    }
+
+    /* ═══════════════════════════════ FOOTER ═══════════════════════════════ */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 48px 0;
+    }
+    .footer-inner {
+      max-width: 1180px; margin: 0 auto; padding: 0 28px;
+    }
+    .footer-top {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 28px;
+    }
+    .footer-brand {
+      display: flex; align-items: center; gap: 10px;
+      font-family: var(--font-display);
+      font-size: 1.05rem; font-weight: 800;
+    }
+    .footer-links { display: flex; gap: 28px; }
+    .footer-links a {
+      font-size: 0.82rem; color: var(--text-secondary); font-weight: 500;
+      transition: color 0.25s;
+    }
+    .footer-links a:hover { color: var(--text); }
+    .footer-bottom {
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-size: 0.78rem; color: var(--text-tertiary);
+    }
+    .footer-bottom a { color: var(--text-secondary); transition: color 0.25s; }
+    .footer-bottom a:hover { color: var(--violet-bright); }
+
+    @media (max-width: 600px) {
+      .footer-top { flex-direction: column; gap: 20px; }
+      .stats-inner { gap: 36px; }
+      section { padding: 100px 0; }
+      .hero { padding: 130px 20px 60px; }
+      .hero-actions { flex-direction: column; }
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--void); }
+    ::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--text-tertiary); }
+
+    /* Noise texture overlay */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      opacity: 0.015;
+      pointer-events: none;
+      z-index: 9999;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════ NAV ═══════════════ -->
+<nav id="nav">
+  <div class="nav-inner">
+    <a href="#" class="nav-brand">
+      <div class="nav-orbit-icon">
+        <div class="ring"></div>
+        <div class="core"></div>
+      </div>
+      Orbit
+    </a>
+    <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Toggle menu">
+      <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <div class="nav-links">
+      <a href="#why">Why Orbit</a>
+      <a href="#pipeline">How It Works</a>
+      <a href="#safety">Safety</a>
+      <a href="#features">Features</a>
+      <a href="#commands">Commands</a>
+      <a href="https://github.com/abhimanyubhagwati/orbit-cli" class="nav-github" target="_blank" rel="noopener">
+        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        GitHub
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section class="hero">
+  <div class="hero-canvas-wrap">
+    <canvas id="heroCanvas"></canvas>
+  </div>
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="hero-orb hero-orb-3"></div>
+
+  <div class="hero-content">
+    <div class="hero-pill">
+      <span class="dot"></span>
+      100% local &mdash; nothing leaves your machine
+    </div>
+    <h1>DevOps in<br><span class="shimmer">natural language.</span></h1>
+    <p class="hero-sub">Turn plain English into safe, observable infrastructure actions. Multi-model routing, regex-only safety, auto-replanning &mdash; powered by Ollama on your machine.</p>
+    <div class="hero-actions">
+      <a href="#install" class="btn-glow btn-primary">
+        Get Started
+        <svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M8 3v10m-4-4l4 4 4-4"/></svg>
+      </a>
+      <a href="https://github.com/abhimanyubhagwati/orbit-cli" class="btn-glow btn-outline" target="_blank" rel="noopener">
+        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        View Source
+      </a>
+    </div>
+
+    <!-- Terminal Demo -->
+    <div class="terminal">
+      <div class="terminal-chrome">
+        <div class="terminal-dot"></div>
+        <div class="terminal-dot"></div>
+        <div class="terminal-dot"></div>
+        <div class="terminal-title">orbit &mdash; zsh</div>
+      </div>
+      <div class="terminal-tabs">
+        <button class="terminal-tab active" data-tab="0">orbit do</button>
+        <button class="terminal-tab" data-tab="1">orbit sense</button>
+        <button class="terminal-tab" data-tab="2">orbit wtf</button>
+      </div>
+      <div class="terminal-body" id="termBody"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ WHY ORBIT ═══════════════ -->
+<section id="why">
+  <div class="container">
+    <div class="section-tag rv">Why Orbit</div>
+    <h2 class="rv">Built different.</h2>
+    <p class="lead rv">Most AI CLI tools get the fundamentals wrong. Orbit rethinks every layer.</p>
+    <div class="why-grid rv">
+      <div class="why-card" style="--card-color: var(--emerald);">
+        <div class="why-icon" style="background:var(--emerald-glow);color:var(--emerald);border:1px solid rgba(16,185,129,0.15);">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        </div>
+        <h3>100% Local</h3>
+        <p class="problem">Your kubectl configs, env vars, and error logs flow through third-party APIs</p>
+        <p class="solution"><strong>Runs entirely on Ollama.</strong> Your infrastructure data never leaves your machine. Zero cloud dependencies.</p>
+      </div>
+      <div class="why-card" style="--card-color: var(--violet);">
+        <div class="why-icon" style="background:var(--violet-glow);color:var(--violet-bright);border:1px solid rgba(139,92,246,0.15);">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h3>Deterministic Safety</h3>
+        <p class="problem">The LLM that generates commands also judges safety &mdash; a circular dependency</p>
+        <p class="solution"><strong>173 regex patterns</strong> classify every command. Deterministic, immune to prompt injection, microsecond latency.</p>
+      </div>
+      <div class="why-card" style="--card-color: var(--cyan);">
+        <div class="why-icon" style="background:var(--cyan-glow);color:var(--cyan-bright);border:1px solid rgba(6,182,212,0.15);">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+        </div>
+        <h3>Multi-Model Routing</h3>
+        <p class="problem">One model handles everything from ls to debugging cascade failures</p>
+        <p class="solution"><strong>Routes subtasks to the best local model</strong> per capability. Deterministic selection, no LLM overhead.</p>
+      </div>
+      <div class="why-card" style="--card-color: var(--amber);">
+        <div class="why-icon" style="background:var(--amber-glow);color:var(--amber-bright);border:1px solid rgba(245,158,11,0.15);">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+        </div>
+        <h3>Auto-Replan</h3>
+        <p class="problem">When a command fails, you're on your own</p>
+        <p class="solution"><strong>Observes failures and generates corrective steps</strong> automatically. Hard budget limits prevent runaway execution.</p>
+      </div>
+      <div class="why-card" style="--card-color: var(--cyan);">
+        <div class="why-icon" style="background:var(--cyan-glow);color:var(--cyan-bright);border:1px solid rgba(6,182,212,0.15);">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        </div>
+        <h3>Context-Aware</h3>
+        <p class="problem">No awareness of what branch, namespace, or cluster you're in</p>
+        <p class="solution"><strong>Auto-scans git, Docker, K8s, system, and filesystem</strong> in parallel. Token-aware budget fits the model window.</p>
+      </div>
+      <div class="why-card" style="--card-color: var(--rose);">
+        <div class="why-icon" style="background:var(--rose-glow);color:var(--rose-bright);border:1px solid rgba(244,63,94,0.15);">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+        </div>
+        <h3>Prod Detection</h3>
+        <p class="problem">Same confirmations whether you're on dev or main</p>
+        <p class="solution"><strong>Detects production environments</strong> and auto-escalates 28 risky patterns to higher confirmation tiers.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ PIPELINE ═══════════════ -->
+<section id="pipeline" class="pipeline-section">
+  <div class="orb-bg orb-bg-1"></div>
+  <div class="orb-bg orb-bg-2"></div>
+  <div class="container">
+    <div class="section-tag rv">How It Works</div>
+    <h2 class="rv">Five-stage pipeline.</h2>
+    <p class="lead rv">The LLM handles exactly 2 things: decomposing goals and generating plans. Everything else is deterministic code.</p>
+
+    <div class="pipeline-track">
+      <div class="pipe-step rv">
+        <div class="pipe-num" style="background:var(--cyan-glow);color:var(--cyan-bright);border:2px solid rgba(6,182,212,0.2);">1</div>
+        <div class="pipe-body">
+          <h3>Environment Scan</h3>
+          <p>Five async collectors run in parallel &mdash; git, Docker, Kubernetes, system, and filesystem. Fault-tolerant with 5s timeouts, cached with 5s TTL. Token-aware budget allocates context by relevance.</p>
+          <div class="pipe-tags"><span class="pipe-tag det">Deterministic</span></div>
+        </div>
+      </div>
+      <div class="pipe-step rv">
+        <div class="pipe-num" style="background:var(--violet-glow);color:var(--violet-bright);border:2px solid rgba(139,92,246,0.2);">2</div>
+        <div class="pipe-body">
+          <h3>Task Decomposition</h3>
+          <p>Goal broken into subtasks, each tagged with a capability: <code style="background:var(--void);padding:2px 7px;border-radius:4px;font-size:0.74rem;color:var(--cyan-bright);border:1px solid var(--border);">fast_shell</code> <code style="background:var(--void);padding:2px 7px;border-radius:4px;font-size:0.74rem;color:var(--cyan-bright);border:1px solid var(--border);">code_gen</code> <code style="background:var(--void);padding:2px 7px;border-radius:4px;font-size:0.74rem;color:var(--cyan-bright);border:1px solid var(--border);">reasoning</code></p>
+          <div class="pipe-tags"><span class="pipe-tag llm">LLM Call</span></div>
+        </div>
+      </div>
+      <div class="pipe-step rv">
+        <div class="pipe-num" style="background:var(--emerald-glow);color:var(--emerald-bright);border:2px solid rgba(16,185,129,0.2);">3</div>
+        <div class="pipe-body">
+          <h3>Model Selection</h3>
+          <p>Each subtask routed to the best locally-available model. Walks a priority list of known-good models, checks what's installed via Ollama, returns the first match.</p>
+          <div class="pipe-tags"><span class="pipe-tag det">Deterministic</span></div>
+        </div>
+      </div>
+      <div class="pipe-step rv">
+        <div class="pipe-num" style="background:var(--violet-glow);color:var(--violet-bright);border:2px solid rgba(139,92,246,0.2);">4</div>
+        <div class="pipe-body">
+          <h3>Plan Generation</h3>
+          <p>Structured output via Pydantic JSON schema. Every plan step has a command, expected outcome, and risk classification. Validated before execution.</p>
+          <div class="pipe-tags"><span class="pipe-tag llm">LLM Call</span></div>
+        </div>
+      </div>
+      <div class="pipe-step rv">
+        <div class="pipe-num" style="background:rgba(251,146,60,0.1);color:#fb923c;border:2px solid rgba(251,146,60,0.2);">5</div>
+        <div class="pipe-body">
+          <h3>Execution Loop</h3>
+          <p>For each step: classify risk (regex), confirm based on tier, execute via async subprocess, observe result. On failure: auto-replan &mdash; 15 steps max, 3 replans per step, 25 total LLM calls.</p>
+          <div class="pipe-tags">
+            <span class="pipe-tag det">Classify &middot; Observe</span>
+            <span class="pipe-tag llm">Replan</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pipe-legend rv">
+      <span><span class="ldot det"></span> Deterministic (no LLM)</span>
+      <span><span class="ldot llm"></span> LLM call</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ SAFETY ═══════════════ -->
+<section id="safety" class="safety-section">
+  <div class="container">
+    <div class="section-tag rv">Safety System</div>
+    <h2 class="rv">The LLM never<br>decides what's safe.</h2>
+    <p class="lead rv">173 hand-crafted regex patterns classify every command into four tiers. First match wins. Unknown defaults to caution &mdash; never safe.</p>
+
+    <div class="tiers-grid">
+      <div class="tier-card tier-safe rv">
+        <div class="tier-icon">
+          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <h3>Safe</h3>
+        <p class="tier-action">Runs silently, no prompt</p>
+        <span class="tier-example">ls &middot; cat &middot; git log</span>
+      </div>
+      <div class="tier-card tier-caution rv">
+        <div class="tier-icon">
+          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+        </div>
+        <h3>Caution</h3>
+        <p class="tier-action">Single confirm [y/N]</p>
+        <span class="tier-example">git push &middot; pip install</span>
+      </div>
+      <div class="tier-card tier-destructive rv">
+        <div class="tier-icon">
+          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 9v4m0 4h.01"/><circle cx="12" cy="12" r="10"/></svg>
+        </div>
+        <h3>Destructive</h3>
+        <p class="tier-action">Impact analysis + double confirm</p>
+        <span class="tier-example">rm &middot; git reset --hard</span>
+      </div>
+      <div class="tier-card tier-nuclear rv">
+        <div class="tier-icon">
+          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </div>
+        <h3>Nuclear</h3>
+        <p class="tier-action">Type "i am sure" + 3s cooldown</p>
+        <span class="tier-example">rm -rf / &middot; DROP TABLE</span>
+      </div>
+    </div>
+
+    <!-- Interactive Classifier -->
+    <div class="classifier-demo rv">
+      <div class="classifier-header">
+        <svg fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Try it &mdash; classify any command
+      </div>
+      <div class="classifier-input-wrap">
+        <span class="classifier-dollar">$</span>
+        <input type="text" id="classifierInput" placeholder="Type a command... (e.g. kubectl delete namespace prod)" autocomplete="off" spellcheck="false" />
+      </div>
+      <div class="classifier-result" id="classifierResult">
+        <span class="tier-desc" style="color:var(--text-tertiary);">Type a command above to see its safety tier</span>
+      </div>
+    </div>
+
+    <!-- Escalation Demo -->
+    <div class="escalation-demo rv" style="margin-top: 32px;">
+      <div class="escalation-header">
+        <svg width="14" height="14" fill="none" stroke="var(--rose)" stroke-width="2"><path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+        Production Auto-Escalation
+      </div>
+      <div class="esc-row">
+        <div><div class="esc-cmd">git push origin main</div><div class="esc-ctx">on feature/auth branch</div></div>
+        <div></div>
+        <span class="tier-badge badge-caution">caution</span>
+      </div>
+      <div class="esc-row" style="background:rgba(244,63,94,0.02);">
+        <div><div class="esc-cmd">git push origin main</div><div class="esc-ctx" style="color:var(--rose);">ON main branch (production detected)</div></div>
+        <div class="esc-arrow">
+          <svg width="12" height="12" fill="none" stroke="var(--rose)" stroke-width="2.5" stroke-linecap="round"><path d="M6 2v8m-3-3l3 3 3-3"/></svg>
+          Escalated
+        </div>
+        <span class="tier-badge badge-nuclear">nuclear</span>
+      </div>
+      <div class="esc-row">
+        <div><div class="esc-cmd">kubectl get pods</div><div class="esc-ctx">any context, any branch</div></div>
+        <div></div>
+        <span class="tier-badge badge-safe">safe</span>
+      </div>
+    </div>
+
+    <div class="callout-box rv">
+      <div class="callout-icon">
+        <svg width="20" height="20" fill="none" stroke="var(--violet-bright)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <div>
+        <h4>Why not use the LLM for safety?</h4>
+        <p>Using the same system that generates commands to judge their safety is a circular dependency. It's vulnerable to prompt injection, can hallucinate, and takes seconds instead of microseconds. Regex patterns are deterministic, injection-immune, and instant.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ MULTI-MODEL ROUTING ═══════════════ -->
+<section>
+  <div class="container">
+    <div class="section-tag rv">Multi-Model Routing</div>
+    <h2 class="rv">Right model,<br>right task.</h2>
+    <p class="lead rv">Not every task needs a 32B model. Orbit routes each subtask to the best locally-available model.</p>
+    <div class="routing-grid">
+      <div class="route-card rv">
+        <div class="cap">fast_shell</div>
+        <p class="desc">Status checks, listing, simple queries</p>
+        <div class="models">qwen2.5:7b, phi3</div>
+        <span class="size-badge sz-sm">Small</span>
+      </div>
+      <div class="route-card rv">
+        <div class="cap">code_gen</div>
+        <p class="desc">Scripts, configs, Dockerfiles, manifests</p>
+        <div class="models">codellama, qwen2.5</div>
+        <span class="size-badge sz-md">Medium</span>
+      </div>
+      <div class="route-card rv">
+        <div class="cap">reasoning</div>
+        <p class="desc">Complex debugging, root cause analysis</p>
+        <div class="models">deepseek-r1:32b</div>
+        <span class="size-badge sz-lg">Large</span>
+      </div>
+      <div class="route-card rv">
+        <div class="cap">general</div>
+        <p class="desc">Fallback for uncategorized tasks</p>
+        <div class="models">default model</div>
+        <span class="size-badge sz-any">Any</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ FEATURES ═══════════════ -->
+<section id="features" class="features-section">
+  <div class="container">
+    <div class="section-tag rv">Features</div>
+    <h2 class="rv">Everything you need.</h2>
+    <p class="lead rv">Built for real DevOps workflows, not demos.</p>
+    <div class="feat-grid">
+      <div class="feat-card rv">
+        <div class="feat-icon"><svg width="18" height="18" fill="none" stroke="var(--violet-bright)" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg></div>
+        <h3>Runbooks</h3>
+        <p>Save successful workflows as YAML runbooks. Replay with <code>orbit runbook run</code>. Shareable, version-controllable DevOps recipes.</p>
+      </div>
+      <div class="feat-card rv">
+        <div class="feat-icon"><svg width="18" height="18" fill="none" stroke="var(--violet-bright)" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+        <h3>Diagnostics</h3>
+        <p>Run <code>orbit wtf</code> after a failure. Full context analysis with error classification and suggested fixes.</p>
+      </div>
+      <div class="feat-card rv">
+        <div class="feat-icon"><svg width="18" height="18" fill="none" stroke="var(--violet-bright)" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+        <h3>Rollback Plans</h3>
+        <p>Destructive commands get automatic rollback plans. Git reflog recovery, kubectl delete reversal, compose restarts.</p>
+      </div>
+      <div class="feat-card rv">
+        <div class="feat-icon"><svg width="18" height="18" fill="none" stroke="var(--violet-bright)" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><circle cx="6" cy="6" r="1"/><circle cx="6" cy="18" r="1"/></svg></div>
+        <h3>Command History</h3>
+        <p>SQLite-backed searchable log of every action. Browse with <code>orbit history</code>. Powers the diagnostics engine.</p>
+      </div>
+      <div class="feat-card rv">
+        <div class="feat-icon"><svg width="18" height="18" fill="none" stroke="var(--violet-bright)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+        <h3>Semantic Memory</h3>
+        <p>Optional ChromaDB vector store for semantic search over past actions. Install with <code>orbit-cli[rag]</code>.</p>
+      </div>
+      <div class="feat-card rv">
+        <div class="feat-icon"><svg width="18" height="18" fill="none" stroke="var(--violet-bright)" stroke-width="2"><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.49 8.49l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.49-8.49l2.83-2.83"/></svg></div>
+        <h3>Multi-Provider</h3>
+        <p>Ollama by default. Optional OpenAI and Anthropic providers. Structured output validated against Pydantic schemas.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ COMMANDS ═══════════════ -->
+<section id="commands">
+  <div class="container">
+    <div class="section-tag rv">Commands</div>
+    <h2 class="rv">Simple CLI,<br>powerful agent.</h2>
+    <p class="lead rv">Every command designed for a terminal-first workflow.</p>
+    <div class="cmds-grid">
+      <div class="cmd-row rv"><code>orbit do "goal"</code><span>Full agent loop &mdash; scan, plan, execute, replan</span></div>
+      <div class="cmd-row rv"><code>orbit sense</code><span>Scan environment &mdash; see what Orbit sees</span></div>
+      <div class="cmd-row rv"><code>orbit wtf</code><span>Diagnose the last failed command</span></div>
+      <div class="cmd-row rv"><code>orbit ask "question"</code><span>One-shot Q&A with full context</span></div>
+      <div class="cmd-row rv"><code>orbit config doctor</code><span>Verify Ollama connectivity and config health</span></div>
+      <div class="cmd-row rv"><code>orbit config show</code><span>Show current configuration</span></div>
+      <div class="cmd-row rv"><code>orbit runbook list</code><span>List saved runbooks</span></div>
+      <div class="cmd-row rv"><code>orbit runbook run name</code><span>Replay a saved workflow</span></div>
+      <div class="cmd-row rv"><code>orbit history list</code><span>Browse command history</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ STATS ═══════════════ -->
+<div class="stats-bar">
+  <div class="stats-inner">
+    <div class="stat-item rv"><div class="stat-num" data-target="173">0</div><div class="stat-label">Safety Patterns</div></div>
+    <div class="stat-item rv"><div class="stat-num" data-target="300">0</div><div class="stat-label">Tests Passing</div></div>
+    <div class="stat-item rv"><div class="stat-num" data-target="3152">0</div><div class="stat-label">Lines of Code</div></div>
+    <div class="stat-item rv"><div class="stat-num" data-target="56">0</div><div class="stat-label">Modules</div></div>
+    <div class="stat-item rv"><div class="stat-num" data-target="0" data-fixed="0">0</div><div class="stat-label">Cloud Dependencies</div></div>
+  </div>
+</div>
+
+<!-- ═══════════════ CTA ═══════════════ -->
+<section id="install" class="cta-section">
+  <div class="container">
+    <div class="section-tag rv">Get Started</div>
+    <h2 class="rv">Up and running<br>in 30 seconds.</h2>
+    <p class="lead rv" style="margin:16px auto 56px;">Requires Python 3.11+ and <a href="https://ollama.ai" target="_blank" rel="noopener" style="color:var(--violet-bright);">Ollama</a> running locally.</p>
+
+    <div class="install-steps rv">
+      <div class="install-row" onclick="copyInstall(this)">
+        <span class="step-n">1</span>
+        <span class="dollar">$</span>
+        <span class="cmd-text">pip install orbit-cli</span>
+        <span class="copied-msg">Copied!</span>
+        <button class="copy-icon" aria-label="Copy"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="9" height="9" rx="1.5"/><path d="M5 11H4a1.5 1.5 0 01-1.5-1.5v-6A1.5 1.5 0 014 2h6A1.5 1.5 0 0111.5 3.5V5"/></svg></button>
+      </div>
+      <div class="install-row" onclick="copyInstall(this)">
+        <span class="step-n">2</span>
+        <span class="dollar">$</span>
+        <span class="cmd-text">ollama pull qwen2.5:7b</span>
+        <span class="copied-msg">Copied!</span>
+        <button class="copy-icon" aria-label="Copy"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="9" height="9" rx="1.5"/><path d="M5 11H4a1.5 1.5 0 01-1.5-1.5v-6A1.5 1.5 0 014 2h6A1.5 1.5 0 0111.5 3.5V5"/></svg></button>
+      </div>
+      <div class="install-row" onclick="copyInstall(this)">
+        <span class="step-n">3</span>
+        <span class="dollar">$</span>
+        <span class="cmd-text">orbit do "find large files and show disk usage"</span>
+        <span class="copied-msg">Copied!</span>
+        <button class="copy-icon" aria-label="Copy"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="9" height="9" rx="1.5"/><path d="M5 11H4a1.5 1.5 0 01-1.5-1.5v-6A1.5 1.5 0 014 2h6A1.5 1.5 0 0111.5 3.5V5"/></svg></button>
+      </div>
+    </div>
+
+    <p class="extras-line rv">
+      Optional extras:
+      <code>orbit-cli[rag]</code> &middot;
+      <code>orbit-cli[openai]</code> &middot;
+      <code>orbit-cli[anthropic]</code> &middot;
+      <code>orbit-cli[all]</code>
+    </p>
+  </div>
+</section>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="nav-orbit-icon" style="width:22px;height:22px;">
+          <div class="ring" style="animation-duration:5s;border-width:1.5px;"></div>
+          <div class="core" style="width:5px;height:5px;"></div>
+        </div>
+        Orbit
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/abhimanyubhagwati/orbit-cli" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://pypi.org/project/orbit-cli/" target="_blank" rel="noopener">PyPI</a>
+        <a href="https://github.com/abhimanyubhagwati/orbit-cli/blob/main/LICENSE" target="_blank" rel="noopener">Apache 2.0</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      Built by <a href="https://github.com/abhimanyubhagwati" target="_blank" rel="noopener">Abhimanyu Bhagwati</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ═══════════════ NAV SCROLL ═══════════════
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 30);
+}, { passive: true });
+
+// ═══════════════ HERO CANVAS ═══════════════
+(function() {
+  const canvas = document.getElementById('heroCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let w, h, particles = [];
+  const colors = [
+    { r:139, g:92, b:246 },
+    { r:6, g:182, b:212 },
+    { r:16, g:185, b:129 },
+  ];
+
+  function resize() {
+    const rect = canvas.parentElement.getBoundingClientRect();
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    w = rect.width; h = rect.height;
+    canvas.width = w * dpr; canvas.height = h * dpr;
+    canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
+    ctx.scale(dpr, dpr);
+  }
+  resize();
+  window.addEventListener('resize', resize, { passive: true });
+
+  const count = Math.min(80, Math.floor(window.innerWidth / 15));
+  for (let i = 0; i < count; i++) {
+    const c = colors[Math.floor(Math.random() * colors.length)];
+    particles.push({
+      x: Math.random() * 2000, y: Math.random() * 1200,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: (Math.random() - 0.5) * 0.3,
+      r: Math.random() * 2 + 0.5,
+      color: c,
+      alpha: Math.random() * 0.4 + 0.1,
+    });
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    // connections
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = dx * dx + dy * dy;
+        if (dist < 22500) { // 150^2
+          const alpha = (1 - Math.sqrt(dist) / 150) * 0.05;
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = `rgba(139,92,246,${alpha})`;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    }
+    for (const p of particles) {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0 || p.x > w) p.vx *= -1;
+      if (p.y < 0 || p.y > h) p.vy *= -1;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${p.color.r},${p.color.g},${p.color.b},${p.alpha})`;
+      ctx.fill();
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ═══════════════ TERMINAL TYPING DEMO ═══════════════
+const demos = [
+  [
+    { type: 'cmd', prompt: '$ ', cmd: 'orbit do ', arg: '"find why my pods are crashing and fix it"' },
+    { type: 'blank', delay: 500 },
+    { type: 'text', cls: 't-dim', text: '  Scanning environment...' },
+    { type: 'text', cls: 't-out', text: '  git: main (3 changed) \u00b7 k8s: prod-cluster/default \u00b7 docker: 4 running', delay: 700 },
+    { type: 'blank' },
+    { type: 'text', cls: 't-dim', text: '  Decomposing goal \u2192 3 subtasks' },
+    { type: 'text', cls: 't-dim', text: '  Routing: fast_shell \u2192 qwen2.5:7b, reasoning \u2192 deepseek-r1:32b', delay: 500 },
+    { type: 'blank' },
+    { type: 'text', cls: 't-dim', text: '  Plan generated (3 steps):' },
+    { type: 'parts', parts: [['t-step','  1. '],['t-out','kubectl get pods --field-selector=status.phase=Failed '],['t-safe','safe']] },
+    { type: 'parts', parts: [['t-step','  2. '],['t-out','kubectl logs pod/api-7d4b --tail=100 '],['t-safe','safe']] },
+    { type: 'parts', parts: [['t-step','  3. '],['t-out','kubectl rollout restart deploy/api '],['t-caution','caution']] },
+    { type: 'blank' },
+    { type: 'text', cls: 't-safe', text: '  Step 3 requires confirmation. Proceed? [y/N] ', cursor: true },
+  ],
+  [
+    { type: 'cmd', prompt: '$ ', cmd: 'orbit sense' },
+    { type: 'blank', delay: 500 },
+    { type: 'text', cls: 't-dim', text: '  Environment Scan' },
+    { type: 'blank' },
+    { type: 'text', cls: 't-label', text: '  GIT' },
+    { type: 'text', cls: 't-out', text: '    Branch: feature/api-auth' },
+    { type: 'text', cls: 't-out', text: '    Changed: 3 files (+142, -28)' },
+    { type: 'text', cls: 't-out', text: '    Last commit: Fix auth middleware (2h ago)' },
+    { type: 'blank' },
+    { type: 'text', cls: 't-label', text: '  DOCKER' },
+    { type: 'text', cls: 't-out', text: '    Containers: 4 running (postgres, redis, api, nginx)' },
+    { type: 'text', cls: 't-out', text: '    Images: 12 local' },
+    { type: 'blank' },
+    { type: 'text', cls: 't-label', text: '  KUBERNETES' },
+    { type: 'text', cls: 't-out', text: '    Context: dev-cluster' },
+    { type: 'text', cls: 't-out', text: '    Namespace: default (6 pods, 2 services)' },
+    { type: 'blank' },
+    { type: 'text', cls: 't-label', text: '  SYSTEM' },
+    { type: 'text', cls: 't-out', text: '    macOS 14.2 \u00b7 zsh \u00b7 Python 3.12 \u00b7 12 env vars (redacted)' },
+  ],
+  [
+    { type: 'cmd', prompt: '$ ', cmd: 'orbit wtf' },
+    { type: 'blank', delay: 500 },
+    { type: 'text', cls: 't-dim', text: '  Analyzing last failure...' },
+    { type: 'blank', delay: 700 },
+    { type: 'text', cls: 't-label', text: '  Last Command' },
+    { type: 'text', cls: 't-out', text: '    docker compose up -d' },
+    { type: 'text', cls: 't-destructive', text: '    Exit code: 1' },
+    { type: 'blank' },
+    { type: 'text', cls: 't-label', text: '  Error' },
+    { type: 'text', cls: 't-out', text: '    port 5432 is already allocated' },
+    { type: 'blank' },
+    { type: 'text', cls: 't-label', text: '  Diagnosis' },
+    { type: 'text', cls: 't-out', text: '    Port conflict: local PostgreSQL is using 5432.' },
+    { type: 'text', cls: 't-out', text: '    The compose postgres service also binds to 5432.' },
+    { type: 'blank' },
+    { type: 'text', cls: 't-label', text: '  Suggested Fix' },
+    { type: 'text', cls: 't-safe', text: '    1. Stop local postgres: brew services stop postgresql' },
+    { type: 'text', cls: 't-caution', text: '    2. Re-run: docker compose up -d' },
+  ]
+];
+
+let activeDemo = 0, typeTimer = null;
+
+function renderDemo(idx) {
+  const body = document.getElementById('termBody');
+  body.innerHTML = '';
+  const demo = demos[idx];
+  let i = 0;
+
+  function nextLine() {
+    if (i >= demo.length) return;
+    const item = demo[i];
+    const line = document.createElement('div');
+    line.className = 't-line';
+
+    if (item.type === 'blank') {
+      line.innerHTML = '<br>';
+    } else if (item.type === 'cmd') {
+      // Character-by-character typing for commands
+      const fullText = (item.arg || '');
+      const promptEl = document.createElement('span');
+      promptEl.className = 't-prompt';
+      promptEl.textContent = item.prompt;
+      line.appendChild(promptEl);
+      const cmdEl = document.createElement('span');
+      cmdEl.className = 't-cmd';
+      cmdEl.textContent = item.cmd;
+      line.appendChild(cmdEl);
+      if (item.arg) {
+        const argEl = document.createElement('span');
+        argEl.className = 't-arg';
+        argEl.textContent = '';
+        line.appendChild(argEl);
+        body.appendChild(line);
+        let ci = 0;
+        function typeChar() {
+          if (ci < fullText.length) {
+            argEl.textContent += fullText[ci];
+            ci++;
+            typeTimer = setTimeout(typeChar, 25 + Math.random() * 30);
+          } else {
+            i++;
+            typeTimer = setTimeout(nextLine, item.delay || 200);
+          }
+        }
+        typeChar();
+        return;
+      }
+    } else if (item.type === 'parts') {
+      item.parts.forEach(([cls, text]) => {
+        const s = document.createElement('span');
+        s.className = cls;
+        s.textContent = text;
+        line.appendChild(s);
+      });
+    } else if (item.type === 'text') {
+      const s = document.createElement('span');
+      s.className = item.cls || '';
+      s.textContent = item.text;
+      line.appendChild(s);
+      if (item.cursor) {
+        const c = document.createElement('span');
+        c.className = 't-cursor';
+        line.appendChild(c);
+      }
+    }
+
+    body.appendChild(line);
+    body.scrollTop = body.scrollHeight;
+    i++;
+    typeTimer = setTimeout(nextLine, item.delay || 90);
+  }
+  nextLine();
+}
+
+document.querySelectorAll('.terminal-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.terminal-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    activeDemo = parseInt(tab.dataset.tab);
+    clearTimeout(typeTimer);
+    renderDemo(activeDemo);
+  });
+});
+renderDemo(0);
+
+// ═══════════════ INTERACTIVE CLASSIFIER ═══════════════
+const safePatterns = [
+  /^(ls|cat|head|tail|less|more|wc|file|stat|echo|printf|whoami|hostname|date|cal|uptime|uname|pwd|which|where|type|man|help)\b/,
+  /^git\s+(log|status|diff|show|branch|tag|remote|stash\s+list|blame|shortlog)\b/,
+  /^kubectl\s+(get|describe|logs|explain|top|version|cluster-info|api-resources)\b/,
+  /^docker\s+(ps|images|logs|inspect|info|version|stats)\b/,
+  /^(pip|npm|yarn|cargo|go)\s+(list|show|info|search|outdated|audit|why)\b/,
+  /^(grep|rg|find|fd|tree|du|df|free|top|htop|ps|env|printenv|id)\b/,
+];
+const cautionPatterns = [
+  /^git\s+(push|pull|fetch|merge|rebase|cherry-pick|checkout|switch|commit|add|stash\s+(push|pop|apply|drop))\b/,
+  /^kubectl\s+(apply|create|scale|label|annotate|patch|edit|set|rollout)\b/,
+  /^docker\s+(build|run|exec|pull|push|compose|start|stop|restart)\b/,
+  /^(pip|npm|yarn|cargo)\s+install\b/,
+  /^(curl|wget|ssh|scp|rsync)\b/,
+  /^(systemctl|service)\s+(start|stop|restart|enable|disable)\b/,
+  /^(chmod|chown|chgrp)\b/,
+  /^(make|cmake|go\s+build|cargo\s+build|mvn|gradle)\b/,
+];
+const destructivePatterns = [
+  /^rm\s+(?!.*-rf\s+\/)/,
+  /^git\s+(reset\s+--hard|clean|revert)\b/,
+  /^kubectl\s+delete\s+(pod|deploy|service|configmap|secret|ingress|pvc|job|cronjob)\b/,
+  /^docker\s+(rm|rmi|system\s+prune|volume\s+rm|network\s+rm)\b/,
+  /^(pip|npm|yarn)\s+uninstall\b/,
+  /^(mv|cp)\s+.*--force/,
+];
+const nuclearPatterns = [
+  /^rm\s+(-rf?\s+\/|.*\s+\/\s*$)/,
+  /^kubectl\s+delete\s+(namespace|ns|node)\b/,
+  /DROP\s+(TABLE|DATABASE|SCHEMA)/i,
+  /^git\s+push\s+.*--force/,
+  /^mkfs\b/,
+  /^dd\s+/,
+  /^:(){ :\|:& };:/,
+  /^chmod\s+(-R\s+)?777\s+\//,
+];
+
+function classifyCommand(cmd) {
+  cmd = cmd.trim();
+  if (!cmd) return null;
+  for (const p of nuclearPatterns) if (p.test(cmd)) return 'nuclear';
+  for (const p of destructivePatterns) if (p.test(cmd)) return 'destructive';
+  for (const p of cautionPatterns) if (p.test(cmd)) return 'caution';
+  for (const p of safePatterns) if (p.test(cmd)) return 'safe';
+  return 'unknown';
+}
+
+const classifierInput = document.getElementById('classifierInput');
+const classifierResult = document.getElementById('classifierResult');
+
+const tierInfo = {
+  safe: { badge: 'badge-safe', label: 'SAFE', desc: 'Runs silently, no confirmation needed' },
+  caution: { badge: 'badge-caution', label: 'CAUTION', desc: 'Single confirmation [y/N]' },
+  destructive: { badge: 'badge-destructive', label: 'DESTRUCTIVE', desc: 'Impact analysis + double confirm' },
+  nuclear: { badge: 'badge-nuclear', label: 'NUCLEAR', desc: 'Type "i am sure" + 3s cooldown' },
+  unknown: { badge: 'badge-unknown', label: 'CAUTION', desc: 'Unknown command defaults to caution' },
+};
+
+classifierInput.addEventListener('input', () => {
+  const val = classifierInput.value.trim();
+  if (!val) {
+    classifierResult.innerHTML = '<span class="tier-desc" style="color:var(--text-tertiary);">Type a command above to see its safety tier</span>';
+    return;
+  }
+  const tier = classifyCommand(val);
+  const info = tierInfo[tier] || tierInfo.unknown;
+  classifierResult.innerHTML = `
+    <span class="tier-desc">${info.desc}</span>
+    <span class="tier-badge ${info.badge}">${info.label}</span>
+  `;
+});
+
+// ═══════════════ COPY INSTALL ═══════════════
+function copyInstall(el) {
+  const text = el.querySelector('.cmd-text').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    el.classList.add('copied');
+    setTimeout(() => el.classList.remove('copied'), 2000);
+  });
+}
+
+// ═══════════════ SCROLL REVEAL ═══════════════
+const revealObs = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('vis');
+      revealObs.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.06, rootMargin: '0px 0px -30px 0px' });
+
+document.querySelectorAll('.rv').forEach(el => revealObs.observe(el));
+
+// Stagger grid children
+document.querySelectorAll('.why-grid, .tiers-grid, .feat-grid, .cmds-grid, .routing-grid').forEach(grid => {
+  Array.from(grid.children).forEach((child, i) => {
+    child.style.transitionDelay = `${i * 0.07}s`;
+  });
+});
+
+// ═══════════════ COUNTER ANIMATION ═══════════════
+const counterObs = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const el = entry.target;
+      const target = parseInt(el.dataset.target);
+      if (el.dataset.fixed !== undefined) { el.textContent = el.dataset.fixed; counterObs.unobserve(el); return; }
+      const duration = 1800;
+      const start = performance.now();
+      function tick(now) {
+        const progress = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 4);
+        const current = Math.round(target * eased);
+        if (target >= 1000) {
+          el.textContent = (current / 1000).toFixed(1) + 'K';
+        } else {
+          el.textContent = current.toLocaleString();
+        }
+        if (progress < 1) requestAnimationFrame(tick);
+        else if (target >= 1000) el.textContent = (target / 1000).toFixed(1) + 'K';
+      }
+      requestAnimationFrame(tick);
+      counterObs.unobserve(el);
+    }
+  });
+}, { threshold: 0.5 });
+
+document.querySelectorAll('.stat-num').forEach(el => counterObs.observe(el));
+</script>
+</body>
+</html>
