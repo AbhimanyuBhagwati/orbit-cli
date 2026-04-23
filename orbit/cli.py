@@ -15,11 +15,15 @@ config_app = typer.Typer(help="Manage Orbit configuration.")
 runbook_app = typer.Typer(help="Manage runbooks.")
 history_app = typer.Typer(help="Command history.")
 module_app = typer.Typer(help="Manage modules.")
+data_app = typer.Typer(help="Data intelligence agent — profile, scan, and understand your data.")
+a2a_app = typer.Typer(help="Agent2Agent (A2A) protocol — expose Orbit agents to other agents.")
 
 app.add_typer(config_app, name="config")
 app.add_typer(runbook_app, name="runbook")
 app.add_typer(history_app, name="history")
 app.add_typer(module_app, name="module")
+app.add_typer(data_app, name="data")
+app.add_typer(a2a_app, name="a2a")
 
 
 def _version_callback(value: bool) -> None:
@@ -241,3 +245,169 @@ def module_list() -> None:
     for mod in modules:
         cmds = ", ".join(mod.commands)
         console.print(f"  [orbit.blue]{mod.name}[/] — {mod.description} ({cmds})")
+
+
+# ── Data agent commands ─────────────────────────────────────────────────────
+
+
+@data_app.command("profile")
+def data_profile(
+    path: str = typer.Argument(help="File path (csv, parquet, json) or connection:table"),
+    sample_limit: int = typer.Option(10000, "--sample", "-s", help="Max rows to sample per column"),
+) -> None:
+    """Profile a data file or table — stats, PII detection, quality score."""
+    from orbit.agents.data.agent import profile_file
+    from orbit.agents.data.display import show_table_profile
+
+    try:
+        result = profile_file(path, sample_limit=sample_limit)
+        show_table_profile(console, result)
+    except ImportError as e:
+        console.print(f"[orbit.error]{e}[/]")
+        raise typer.Exit(code=1) from None
+    except (FileNotFoundError, ValueError) as e:
+        console.print(f"[orbit.error]{e}[/]")
+        raise typer.Exit(code=1) from None
+
+
+@data_app.command("connect")
+def data_connect(
+    name: str = typer.Argument(help="Connection name"),
+    connector_type: str = typer.Argument(help="Type: csv, parquet, json, sqlite, postgres"),
+    path: str = typer.Option(None, "--path", "-p", help="File or directory path"),
+    host: str = typer.Option(None, "--host", help="Database host"),
+    port: int = typer.Option(None, "--port", help="Database port"),
+    database: str = typer.Option(None, "--db", help="Database name"),
+    username: str = typer.Option(None, "--user", "-u", help="Database username"),
+    password: str = typer.Option(None, "--password", help="Database password"),
+) -> None:
+    """Save a data source connection."""
+    from orbit.agents.data.connections import save_connection
+    from orbit.agents.data.connectors.factory import create_connector
+    from orbit.schemas.data import ConnectionConfig
+
+    config = ConnectionConfig(
+        name=name,
+        connector_type=connector_type,  # type: ignore[arg-type]
+        path=path,
+        host=host,
+        port=port,
+        database=database,
+        username=username,
+        password=password,
+    )
+
+    # Test connection
+    try:
+        connector = create_connector(config)
+        if connector.test_connection():
+            save_connection(config)
+            tables = connector.list_tables()
+            console.print(f"[orbit.success]Connected to '{name}' — {len(tables)} table(s) found[/]")
+            for t in tables[:10]:
+                console.print(f"  [cyan]{t}[/]")
+            if len(tables) > 10:
+                console.print(f"  [dim]... and {len(tables) - 10} more[/]")
+            connector.close()
+        else:
+            console.print(f"[orbit.error]Connection test failed for '{name}'[/]")
+            raise typer.Exit(code=1)
+    except Exception as e:
+        console.print(f"[orbit.error]Failed: {e}[/]")
+        raise typer.Exit(code=1) from None
+
+
+@data_app.command("scan")
+def data_scan() -> None:
+    """Scan all saved connections and build a data catalog."""
+    from orbit.agents.data.agent import find_duplicates, scan_all
+    from orbit.agents.data.display import show_catalog
+
+    catalog = scan_all()
+    if not catalog.entries:
+        console.print("[dim]No data sources found. Use 'orbit data connect' to add one.[/]")
+        return
+
+    show_catalog(console, catalog)
+
+    # Show duplicate columns
+    dupes = find_duplicates(catalog)
+    if dupes:
+        console.print("\n[bold]Similar Columns Across Tables[/]")
+        for cols, score, reason in dupes[:10]:
+            col_strs = [f"{t}.{c}" for t, c in cols]
+            console.print(f"  [yellow]{' ~ '.join(col_strs)}[/]  ({reason})")
+
+
+@data_app.command("connections")
+def data_connections() -> None:
+    """List saved data connections."""
+    from orbit.agents.data.connections import list_connections
+
+    names = list_connections()
+    if not names:
+        console.print("[dim]No saved connections. Use 'orbit data connect' to add one.[/]")
+        return
+    for name in names:
+        console.print(f"  [orbit.blue]{name}[/]")
+
+
+@data_app.command("disconnect")
+def data_disconnect(
+    name: str = typer.Argument(help="Connection name to remove"),
+) -> None:
+    """Remove a saved data connection."""
+    from orbit.agents.data.connections import delete_connection
+
+    if delete_connection(name):
+        console.print(f"[orbit.success]Removed connection '{name}'[/]")
+    else:
+        console.print(f"[orbit.error]Connection '{name}' not found[/]")
+        raise typer.Exit(code=1)
+
+
+# ── A2A protocol commands ───────────────────────────────────────────────────
+
+
+@a2a_app.command("serve")
+def a2a_serve(
+    host: str = typer.Option("127.0.0.1", "--host", "-h", help="Bind host"),
+    port: int = typer.Option(8000, "--port", "-p", help="Bind port"),
+    public_url: str = typer.Option(
+        "",
+        "--public-url",
+        help="Advertised base URL in the agent card (defaults to http://<host>:<port>).",
+    ),
+) -> None:
+    """Serve Orbit's data agent over the A2A protocol."""
+    try:
+        import uvicorn
+    except ImportError:
+        console.print(
+            '[orbit.error]A2A extras not installed. Run: pip install "orbit-cli[a2a]"[/]'
+        )
+        raise typer.Exit(code=1) from None
+
+    from orbit.a2a import create_app
+
+    base_url = public_url or f"http://{host}:{port}"
+    app_asgi = create_app(base_url=base_url)
+
+    console.print(f"[orbit.success]A2A server listening on {base_url}[/]")
+    console.print(f"  [dim]Agent card:[/]  [cyan]{base_url}/.well-known/agent.json[/]")
+    console.print(f"  [dim]JSON-RPC:[/]    [cyan]POST {base_url}/[/]")
+    uvicorn.run(app_asgi, host=host, port=port, log_level="info")
+
+
+@a2a_app.command("card")
+def a2a_card(
+    base_url: str = typer.Option(
+        "http://localhost:8000", "--base-url", help="Base URL to embed in the card"
+    ),
+) -> None:
+    """Print the agent card JSON (for inspection or publishing)."""
+    import json
+
+    from orbit.a2a import build_agent_card
+
+    console.print_json(json.dumps(build_agent_card(base_url)))
