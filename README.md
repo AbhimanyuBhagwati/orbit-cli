@@ -71,7 +71,52 @@ orbit config show        # Show current configuration
 orbit runbook list       # List saved runbooks
 orbit runbook run name   # Replay a saved workflow
 orbit history list       # Browse command history
+orbit data profile path  # Profile a CSV/Parquet/JSON file — stats, PII, quality
+orbit data scan          # Catalog every saved connection + find similar columns
+orbit a2a serve          # Expose the data agent over the A2A protocol
+orbit a2a card           # Print the agent card JSON
 ```
+
+## Agent2Agent (A2A) Protocol
+
+Orbit speaks the [Agent2Agent (A2A) protocol](https://a2aproject.github.io/A2A/) so other agents — LangGraph, CrewAI, custom orchestrators, or another Orbit instance — can discover and call Orbit's data agent over HTTP.
+
+```bash
+pip install "orbit-cli[a2a]"
+orbit a2a serve --host 127.0.0.1 --port 8000
+```
+
+This serves two endpoints:
+
+| Endpoint | Purpose |
+|---|---|
+| `GET  /.well-known/agent.json` | Agent card — name, skills, capabilities, input/output modes |
+| `POST /` | JSON-RPC 2.0 — `message/send`, `tasks/get` |
+
+Exposed skills:
+
+- **`profile-file`** — profile a CSV/Parquet/JSON file (stats, PII detection, quality score)
+- **`scan-catalog`** — scan every saved connection and return a full catalog
+- **`list-connections`** — list saved connection names
+
+Call it from any A2A client:
+
+```bash
+curl -s http://127.0.0.1:8000/ \
+  -H 'content-type: application/json' \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "message/send",
+    "params": {
+      "message": {
+        "parts": [{"kind": "data", "data": {"skill": "profile-file", "path": "/data/users.csv"}}]
+      }
+    }
+  }'
+```
+
+The response is an A2A `Task` with the profile result in `artifacts[].parts[].data`. Safety stays local: the A2A server only exposes the data agent's read-only skills — no shell execution, no write paths.
 
 ## How It Works
 
@@ -244,6 +289,9 @@ max_llm_calls = 25               # total LLM calls per goal
 pip install orbit-cli[rag]        # ChromaDB for semantic memory
 pip install orbit-cli[openai]     # OpenAI provider
 pip install orbit-cli[anthropic]  # Anthropic provider
+pip install orbit-cli[a2a]        # Agent2Agent protocol server (starlette + uvicorn)
+pip install orbit-cli[data]       # Polars for data agent
+pip install orbit-cli[postgres]   # Postgres connector
 pip install orbit-cli[all]        # everything
 ```
 
